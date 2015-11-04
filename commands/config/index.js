@@ -1,13 +1,17 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
-let _   = require('lodash');
+let cli         = require('heroku-cli-util');
+let co          = require('co');
+let _           = require('lodash');
+let shellescape = require('shell-escape');
 
 function* run (context, heroku) {
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`});
   if (context.flags.shell) {
-    _.forEach(configVars, (v, k) => cli.log(`${k}=${v}`));
+    _.forEach(configVars, function (v, k) {
+      v = process.stdout.isTTY ? shellescape([v]) : v;
+      cli.log(`${k}=${v}`);
+    });
   } else if (context.flags.json) {
     cli.log(JSON.stringify(configVars, null, 2));
   } else {
