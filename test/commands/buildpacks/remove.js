@@ -2,12 +2,12 @@
 
 let nock       = require('nock');
 let expect     = require('chai').expect;
-let buildpacks = require('../../commands/buildpacks/remove.js');
-let error      = require('../../lib/error.js');
-let unwrap     = require('../unwrap.js');
-let stub_get   = require('../stubs/buildpacks.js').get;
-let stub_put   = require('../stubs/buildpacks.js').put;
-let assert_exit = require('../assert_exit.js');
+let buildpacks = require('../../../commands/buildpacks/remove.js');
+let error      = require('../../../lib/error.js');
+let unwrap     = require('../../unwrap.js');
+let stub_get   = require('../../stubs/buildpacks.js').get;
+let stub_put   = require('../../stubs/buildpacks.js').put;
+let assert_exit = require('../../assert_exit.js');
 
 describe('heroku buildpacks:remove', function() {
   beforeEach(function() {

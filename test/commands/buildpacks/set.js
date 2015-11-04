@@ -1,11 +1,11 @@
 'use strict';
 
 let expect     = require('chai').expect;
-let buildpacks = require('../../commands/buildpacks/set.js');
-let error      = require('../../lib/error.js');
-let stub_get   = require('../stubs/buildpacks.js').get;
-let stub_put   = require('../stubs/buildpacks.js').put;
-let assert_exit = require('../assert_exit.js');
+let buildpacks = require('../../../commands/buildpacks/set.js');
+let error      = require('../../../lib/error.js');
+let stub_get   = require('../../stubs/buildpacks.js').get;
+let stub_put   = require('../../stubs/buildpacks.js').put;
+let assert_exit = require('../../assert_exit.js');
 
 describe('heroku buildpacks:set', function() {
   beforeEach(function() {
