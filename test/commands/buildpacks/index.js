@@ -22,6 +22,32 @@ https://github.com/heroku/heroku-buildpack-ruby
     });
   });
 
+  it('# maps buildpack urns to names', function() {
+    stub_get('urn:buildpack:heroku/ruby');
+
+    return buildpacks.run({app: 'example'})
+    .then(function() {
+      expect(cli.stderr).to.equal('');
+      expect(cli.stdout).to.equal(
+`=== example Buildpack URL
+heroku/ruby
+`);
+    });
+  });
+
+  it('# maps buildpack s3 to names', function() {
+    stub_get('https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz');
+
+    return buildpacks.run({app: 'example'})
+    .then(function() {
+      expect(cli.stderr).to.equal('');
+      expect(cli.stdout).to.equal(
+`=== example Buildpack URL
+heroku/ruby
+`);
+    });
+  });
+
   it('# with no buildpack URL set does not display a buildpack URL', function() {
     stub_get();
 

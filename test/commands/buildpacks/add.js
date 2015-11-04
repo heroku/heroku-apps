@@ -1,5 +1,6 @@
 'use strict';
 
+let nock       = require('nock');
 let expect     = require('chai').expect;
 let buildpacks = require('../../../commands/buildpacks/add.js');
 let error      = require('../../../lib/error.js');
@@ -14,6 +15,49 @@ describe('heroku buildpacks:add', function() {
   });
 
   describe('URL', function() {
+
+    it('# maps buildpack names', function() {
+      stub_get();
+
+      let mock = nock('https://api.heroku.com')
+      .put('/apps/example/buildpack-installations', {
+        updates: [{buildpack: 'heroku/ruby'}]
+      })
+      .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}]);
+
+      return buildpacks.run({
+        app: 'example', args: {url: 'heroku/ruby'}
+      }).then(function() {
+        mock.done();
+        expect(cli.stderr).to.equal('');
+        expect(cli.stdout).to.equal(
+`Buildpack added. Next release on example will use heroku/ruby.
+Run git push heroku master to create a new release using this buildpack.
+`);
+      });
+    });
+
+    it('# maps buildpack urns', function() {
+      stub_get();
+
+      let mock = nock('https://api.heroku.com')
+      .put('/apps/example/buildpack-installations', {
+        updates: [{buildpack: 'heroku/ruby'}]
+      })
+      .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}]);
+
+      return buildpacks.run({
+        app: 'example', args: {url: 'urn:buildpack:heroku/ruby'}
+      }).then(function() {
+        mock.done();
+        expect(cli.stderr).to.equal('');
+        expect(cli.stdout).to.equal(
+`Buildpack added. Next release on example will use heroku/ruby.
+Run git push heroku master to create a new release using this buildpack.
+`);
+      });
+    });
+  
     it('# with no buildpacks adds the buildpack URL', function() {
       stub_get();
 
@@ -99,6 +143,16 @@ Run git push heroku master to create a new release using these buildpacks.
         app: 'example', args: {url: 'http://github.com/foobar/foobar'},
       })).then(function() {
         expect(cli.stderr).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n');
+      });
+    });
+
+    it('# errors out when already exists urn', function() {
+      stub_get('urn:buildpack:heroku/ruby');
+
+      return assert_exit(1, buildpacks.run({
+        app: 'example', args: {url: 'heroku/ruby'}
+      })).then(function() {
+        expect(cli.stderr).to.equal(' ▸    The buildpack heroku/ruby is already set on your app.\n');
       });
     });
   });

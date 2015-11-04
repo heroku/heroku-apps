@@ -226,6 +226,28 @@ Run git push heroku master to create a new release using this buildpack.
       });
     });
 
+    it('# remove by name should work', function() {
+      stub_get(
+        'urn:buildpack:heroku/ruby'
+      );
+
+      let mock = stub_put();
+
+      nock('https://api.heroku.com')
+      .get('/apps/example/config-vars')
+      .reply(200, {});
+
+      return buildpacks.run({
+        app: 'example', args: {url: 'heroku/ruby'}
+      }).then(function() {
+        mock.done();
+        expect(cli.stderr).to.equal('');
+        expect(cli.stdout).to.equal(
+`Buildpack removed. Next release on example will detect buildpack normally.
+`);
+      });
+    });
+
     it('# with no buildpacks reports an error removing buildpack_url', function() {
       stub_get();
 
