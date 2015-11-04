@@ -11,6 +11,8 @@ exports.commands = [
   require('./commands/apps/info').apps,
   require('./commands/apps/info').root,
   require('./commands/config'),
+  require('./commands/config/set').add,
+  require('./commands/config/set').set,
   require('./commands/config/get'),
   require('./commands/config/unset'),
   require('./commands/maintenance/index'),

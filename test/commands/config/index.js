@@ -11,7 +11,7 @@ describe('config', function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/config-vars')
       .reply(200, {'LANG': 'en_US.UTF-8', 'RACK_ENV': 'production'});
-    return cmd.run({app: 'myapp'})
+    return cmd.run({app: 'myapp', flags: {}})
     .then(() => expect(cli.stdout).to.equal('=== myapp Config Vars\nLANG:     en_US.UTF-8\nRACK_ENV: production\n'))
     .then(() => api.done());
   });
