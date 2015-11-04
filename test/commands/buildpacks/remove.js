@@ -254,7 +254,7 @@ Run git push heroku master to create a new release using this buildpack.
       return assert_exit(1, buildpacks.run({
         app: 'example', args: {url: 'http://github.com/bar/bar'},
       })).then(function() {
-        expect(cli.stderr).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n');
+        expect(unwrap(cli.stderr)).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n');
       });
     });
 
@@ -299,7 +299,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assert_exit(1, buildpacks.run({
         app: 'example', flags: {index: '1'}, args: {url: 'http://github.com/foo/foo'}
       })).then(function() {
-        expect(cli.stderr).to.equal(' ▸    Please choose either index or Buildpack URL, but not both.\n');
+        expect(unwrap(cli.stderr)).to.equal(' ▸    Please choose either index or Buildpack URL, but not both.\n');
       });
     });
   });
@@ -308,9 +308,8 @@ Run git push heroku master to create a new release using these buildpacks.
     return assert_exit(1, buildpacks.run({
       app: 'example'
     })).then(function() {
-      expect(cli.stderr).to.equal(
-` ▸    Usage: heroku buildpacks:remove [BUILDPACK_URL].
- ▸    Must specify a buildpack to remove, either by index or URL.
+      expect(unwrap(cli.stderr)).to.equal(
+` ▸    Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.
 `);
     });
   });
