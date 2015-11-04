@@ -5,6 +5,7 @@ let buildpacks = require('../../../commands/buildpacks/set.js');
 let error      = require('../../../lib/error.js');
 let stub_get   = require('../../stubs/buildpacks.js').get;
 let stub_put   = require('../../stubs/buildpacks.js').put;
+let unwrap     = require('../../unwrap.js');
 let assert_exit = require('../../assert_exit.js');
 
 describe('heroku buildpacks:set', function() {
@@ -39,7 +40,7 @@ Run git push heroku master to create a new release using this buildpack.
       return assert_exit(1, buildpacks.run({
         app: 'example', args: {url: 'http://github.com/foobar/foobar'},
       })).then(function() {
-        expect(cli.stderr).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n');
+        expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n');
       });
     });
 
@@ -125,7 +126,7 @@ Run git push heroku master to create a new release using this buildpack.
         flags: {index: '1'},
       })).then(function() {
         expect(cli.stdout).to.equal('');
-        expect(cli.stderr).to.equal(
+        expect(unwrap(cli.stderr)).to.equal(
 ` ▸    The buildpack https://github.com/heroku/heroku-buildpack-ruby is already set on your app.
 `);
       });
@@ -224,7 +225,7 @@ Run git push heroku master to create a new release using these buildpacks.
         flags: {index: '2'},
       })).then(function() {
         expect(cli.stdout).to.equal('');
-        expect(cli.stderr).to.equal(
+        expect(unwrap(cli.stderr)).to.equal(
 ` ▸    The buildpack https://github.com/heroku/heroku-buildpack-java is already set on your app.
 `);
       });

@@ -6,6 +6,7 @@ let buildpacks = require('../../../commands/buildpacks/add.js');
 let error      = require('../../../lib/error.js');
 let stub_get   = require('../../stubs/buildpacks.js').get;
 let stub_put   = require('../../stubs/buildpacks.js').put;
+let unwrap     = require('../../unwrap.js');
 let assert_exit = require('../../assert_exit.js');
 
 describe('heroku buildpacks:add', function() {
@@ -142,7 +143,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assert_exit(1, buildpacks.run({
         app: 'example', args: {url: 'http://github.com/foobar/foobar'},
       })).then(function() {
-        expect(cli.stderr).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n');
+        expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n');
       });
     });
 
