@@ -1,8 +1,8 @@
 'use strict';
 
 let expect     = require('chai').expect;
-let buildpacks = require('../../commands/buildpacks');
-let stub_get   = require('../stubs/buildpacks.js').get;
+let buildpacks = require('../../../commands/buildpacks');
+let stub_get   = require('../../stubs/buildpacks.js').get;
 
 describe('heroku buildpacks', function() {
   beforeEach(function() {

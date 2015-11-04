@@ -2,10 +2,10 @@
 
 let nock       = require('nock');
 let expect     = require('chai').expect;
-let buildpacks = require('../../commands/buildpacks/clear.js');
-let error      = require('../../lib/error.js');
-let unwrap     = require('../unwrap.js');
-let stub_put   = require('../stubs/buildpacks.js').put;
+let buildpacks = require('../../../commands/buildpacks/clear.js');
+let error      = require('../../../lib/error.js');
+let unwrap     = require('../../unwrap.js');
+let stub_put   = require('../../stubs/buildpacks.js').put;
 
 describe('heroku buildpacks:clear', function() {
   beforeEach(function() {
