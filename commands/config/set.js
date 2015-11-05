@@ -5,23 +5,14 @@ let co     = require('co');
 let extend = require('util')._extend;
 let _      = require('lodash');
 
-function split(str, delim) {
-  var components = str.split(delim);
-  var result = [components.shift()];
-  if(components.length) {
-    result.push(components.join(delim));
-  }
-  return result;
-}
-
 function* run (context, heroku) {
   let vars = _.reduce(context.args, function (vars, v) {
-    if (v.indexOf('=') === -1) {
+    let idx = v.indexOf('=');
+    if (idx === -1) {
       cli.error(`${cli.color.cyan(v)} is invalid. Must be in the format ${cli.color.cyan('FOO=bar')}.`);
       process.exit(1);
     }
-    v = split(v, '=');
-    vars[v[0]] = v[1];
+    vars[v.slice(0, idx)] = v.slice(idx+1);
     return vars;
   }, {});
   let p = heroku.request({
