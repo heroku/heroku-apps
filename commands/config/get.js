@@ -7,8 +7,8 @@ let co          = require('co');
 function* run (context, heroku) {
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`});
   let v = configVars[context.args.key];
-  if (typeof(v) === 'undefined') {
-    cli.log(''); // match v2 output for missing
+  if (v === undefined) {
+    cli.log(''); // match v3 output for missing
   } else {
     if (context.flags.shell) {
       v = process.stdout.isTTY ? shellescape([v]) : v;
