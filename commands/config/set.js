@@ -20,7 +20,9 @@ function* run (context, heroku) {
     path: `/apps/${context.app}/config-vars`,
     body: vars,
   });
-  yield cli.action(`Setting config vars and restarting ${context.app}`, p);
+  let configVars = yield cli.action(`Setting config vars and restarting ${context.app}`, p);
+  configVars = _.pick(configVars, (_, k) => vars[k]);
+  cli.styledObject(configVars);
 }
 
 let cmd = {
