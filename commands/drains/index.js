@@ -6,12 +6,12 @@ let co  = require('co');
 function* run (context, heroku) {
   let drains = yield heroku.request({path: `/apps/${context.app}/log-drains`});
   drains.forEach(function (drain) {
-    cli.log(`${drain.url} (${drain.token})`);
+    cli.log(`${cli.color.cyan(drain.url)} (${cli.color.green(drain.token)})`);
   });
 }
 
 module.exports = {
-  topic: '_drains',
+  topic: 'drains',
   description: 'display the log drains of an app',
   needsApp: true,
   needsAuth: true,
