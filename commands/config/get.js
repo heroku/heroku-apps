@@ -8,10 +8,16 @@ function* run (context, heroku) {
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`});
   if (context.flags.shell) {
     let v = configVars[context.args.key];
-    v = process.stdout.isTTY ? shellescape([v]) : v;
-    cli.log(`${context.args.key}=${v}`);
+    if (v) {
+      v = process.stdout.isTTY ? shellescape([v]) : v;
+      cli.log(`${context.args.key}=${v}`);
+    } else {
+      cli.log();
+    }
   } else {
-    cli.log(configVars[context.args.key]);
+    let v = configVars[context.args.key];
+    if (v) cli.log(configVars[context.args.key]);
+    else   cli.log();
   }
 }
 
