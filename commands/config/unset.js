@@ -16,7 +16,8 @@ function* run (context, heroku) {
     // body will be like {FOO: null, BAR: null}
     body: _.reduce(context.args, (vars, v) => {vars[v] = null; return vars;}, {})
   });
-  yield cli.action(`Unsetting ${context.args.join(', ')} and restarting ${context.app}`, p);
+  let vars = context.args.map(v => cli.color.green(v)).join(', ');
+  yield cli.action(`Unsetting ${vars} and restarting ${cli.color.app(context.app)}`, p);
 }
 
 let cmd = {
