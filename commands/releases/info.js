@@ -1,0 +1,52 @@
+'use strict';
+
+let cli  = require('heroku-cli-util');
+let co   = require('co');
+
+function* run (context, heroku) {
+  // TODO: find out how to get config vars and addons data in apiv3 or deprecate this command
+  let id = (context.args.release || 'current').toLowerCase();
+  id = id.startsWith('v') ? id.slice(1) : id;
+  let release;
+  if (id === 'current') {
+    release = (yield heroku.request({
+      path: `/apps/${context.app}/releases`,
+      partial: true,
+      headers: { 'Range': `version ..; max=1, order=desc` },
+    }))[0];
+  } else {
+    release = yield heroku.request({
+      path:    `/apps/${context.app}/releases/${id}`,
+      headers: {Accept: 'application/json'},
+    });
+  }
+  if (context.flags.json) {
+    cli.styledJSON(release);
+  } else {
+    cli.styledHeader(`Release ${cli.color.cyan(release.name)}`);
+    cli.styledObject({
+      'Add-ons': release.addons,
+      Change: release.descr,
+      By:     release.user,
+      When:   release.created_at,
+    });
+    cli.log();
+    if (release.env) {
+      cli.styledHeader(`${cli.color.cyan(release.name)} Config vars`);
+      cli.styledObject(release.env);
+    }
+  }
+}
+
+module.exports = {
+  topic: 'releases',
+  command: 'info',
+  description: 'view detailed information for a release',
+  needsApp: true,
+  needsAuth: true,
+  args: [{name: 'release', optional: true}],
+  flags: [
+    {name: 'json', description: 'output in json format'},
+  ],
+  run: cli.command(co.wrap(run))
+};
