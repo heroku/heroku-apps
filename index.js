@@ -24,6 +24,7 @@ exports.commands = [
   require('./commands/config/unset').remove,
   require('./commands/config/unset').unset,
   require('./commands/domains'),
+  require('./commands/domains/add'),
   require('./commands/maintenance/index'),
   require('./commands/maintenance/off'),
   require('./commands/maintenance/on'),
