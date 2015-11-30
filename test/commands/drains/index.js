@@ -13,7 +13,7 @@ describe('drains', function() {
       .reply(200, [{
         token: 'd.8bf587e9-29d1-43c8-bd0e-36cdfaf35259',
         url: 'https://forker.herokuapp.com'}]);
-    return cmd.run({app: 'myapp'})
+    return cmd.run({app: 'myapp', flags: {}})
     .then(() => expect(cli.stdout).to.equal('https://forker.herokuapp.com (d.8bf587e9-29d1-43c8-bd0e-36cdfaf35259)\n'))
     .then(() => api.done());
   });
