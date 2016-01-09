@@ -38,6 +38,8 @@ exports.commands = [
   require('./commands/drains/add'),
   require('./commands/drains/remove'),
   require('./commands/labs'),
+  require('./commands/labs/disable'),
+  require('./commands/labs/enable'),
   require('./commands/labs/info'),
   require('./commands/maintenance/index'),
   require('./commands/maintenance/off'),
