@@ -17,8 +17,15 @@ function print (feature) {
 }
 
 function* run (context, heroku) {
-  let feature = yield heroku.get(`/account/features/${context.args.feature}`)
-                      .catch(() => heroku.get(`/apps/${context.app}/features/${context.args.feature}`));
+  let feature;
+  try {
+    feature = yield heroku.get(`/account/features/${context.args.feature}`);
+  } catch (err) {
+    if (err.statusCode !== 404) throw err;
+    // might be an app feature
+    if (!context.app) throw err;
+    feature = yield heroku.get(`/apps/${context.app}/features/${context.args.feature}`);
+  }
   if (context.flags.json) {
     printJSON(feature);
   } else {
