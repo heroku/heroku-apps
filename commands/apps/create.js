@@ -11,7 +11,7 @@ function* run (context, heroku) {
   function createApp () {
     let params = {
       name,
-      organization:  context.org,
+      organization:  context.flags.org,
       region:        context.flags.region,
       space:         context.flags.space,
       stack:         context.flags.stack,
