@@ -10,7 +10,7 @@ function printJSON (features) {
 }
 
 function printFeatures (features) {
-  features = _.sortByAll(features, 'name');
+  features = _.sortBy(features, 'name');
   let longest = Math.max(...features.map(f => f.name.length));
   for (let f of features) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${S(f.name).padRight(longest)}`;
@@ -24,7 +24,7 @@ function* run (context, heroku) {
   let features = yield {
     currentUser: heroku.get('/account'),
     user: heroku.get('/account/features'),
-    app: context.app ? heroku.get(`/apps/${context.app}/features`) : null,
+    app: context.app ? heroku.get(`/apps/${context.app}/features`).catch(() => null) : null,
   };
   // general features are managed via `features` not `labs`
   features.user = features.user.filter(f => f.state !== 'general');
