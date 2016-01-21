@@ -7,6 +7,7 @@ exports.topics = [
   { name: 'info',        hidden: true, },
   { name: 'maintenance', description: 'manage maintenance mode for an app' },
   { name: 'ps',          description: 'manage dynos (dynos, workers)' },
+  { name: 'releases',    description: 'manage app releases' },
   { name: 'stack',       description: 'manage the stack of an app' },
 ];
 
@@ -34,6 +35,8 @@ exports.commands = [
   require('./commands/maintenance/off'),
   require('./commands/maintenance/on'),
   require('./commands/ps'),
+  require('./commands/releases'),
+  require('./commands/releases/rollback'),
   require('./commands/stack'),
   require('./commands/stack/set'),
 ];
