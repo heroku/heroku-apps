@@ -56,6 +56,7 @@ exports.commands = [
   require('./commands/features/disable'),
   require('./commands/features/enable'),
   require('./commands/features/info'),
+  require('./commands/keys'),
   require('./commands/labs'),
   require('./commands/labs/disable'),
   require('./commands/labs/enable'),
