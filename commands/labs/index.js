@@ -24,7 +24,7 @@ function* run (context, heroku) {
   let features = yield {
     currentUser: heroku.get('/account'),
     user: heroku.get('/account/features'),
-    app: context.app ? heroku.get(`/apps/${context.app}/features`).catch(() => null) : null,
+    app: context.app ? heroku.get(`/apps/${context.app}/features`) : null,
   };
   // general features are managed via `features` not `labs`
   features.user = features.user.filter(f => f.state !== 'general');
