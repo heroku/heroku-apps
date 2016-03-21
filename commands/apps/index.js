@@ -18,10 +18,6 @@ function* run (context, heroku) {
 
   let isOrgApp = app => !app.owner.email.endsWith('@herokumanager.com');
 
-  function printJSON (apps) {
-    console.log(JSON.stringify(apps, null, 2));
-  }
-
   function listApps (apps) {
     apps.forEach(app => cli.log(regionizeAppName(app)));
     cli.log();
@@ -68,14 +64,14 @@ function* run (context, heroku) {
   if (space) apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space));
 
   if (context.flags.json) {
-    printJSON(apps);
+    cli.styledJSON(apps);
   } else {
     print(apps, requests.user);
   }
 }
 
 module.exports = {
-  topic: '_apps',
+  topic: 'apps',
   description: 'list your apps',
   help: `
 Example:
@@ -97,4 +93,3 @@ Example:
   ],
   run: cli.command(co.wrap(run))
 };
-
