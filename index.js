@@ -21,6 +21,8 @@ exports.commands = [
   require('./commands/apps/destroy').apps,
   require('./commands/apps/destroy').delete,
   require('./commands/apps/destroy').root,
+  require('./commands/apps/rename').apps,
+  require('./commands/apps/rename').root,
   require('./commands/apps/info').apps,
   require('./commands/apps/info').root,
   require('./commands/buildpacks'),
