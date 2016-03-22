@@ -17,8 +17,6 @@ function* run (context, heroku) {
 }
 
 let cmd = {
-  topic:   'ps',
-  command: 'restart',
   description: 'restart app dynos',
   help: `
 if DYNO is not specified, restarts all dynos on app
@@ -40,12 +38,6 @@ Examples:
   run: cli.command(co.wrap(run))
 };
 
-exports.root     = cmd;
-exports.ps       = Object.assign({}, cmd, {topic: 'restart', command: null});
+exports.ps       = Object.assign({}, cmd, {topic: 'ps',      command: 'restart'});
+exports.restart  = Object.assign({}, cmd, {topic: 'restart', command: null});
 exports.dyno     = Object.assign({}, cmd, {topic: 'dyno',    command: 'restart'});
-exports.stop     = Object.assign({}, cmd, {topic: 'ps',      command: 'stop'});
-exports.stopDyno = Object.assign({}, cmd, {topic: 'dyno',    command: 'stop'});
-exports.stopRoot = Object.assign({}, cmd, {topic: 'stop',    command: null});
-exports.kill     = Object.assign({}, cmd, {topic: 'ps',      command: 'kill'});
-exports.killDyno = Object.assign({}, cmd, {topic: 'dyno',    command: 'kill'});
-exports.killRoot = Object.assign({}, cmd, {topic: 'kill',    command: null});
