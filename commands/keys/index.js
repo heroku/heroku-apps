@@ -5,19 +5,22 @@ let cli = require('heroku-cli-util');
 
 function formatKey (key) {
   key = key.trim().split(/\s/);
-  return `${key[0]} ${key[1].substr(0,10)}...${key[1].substr(-10,10)} ${key[2]}`;
+  return `${key[0]} ${key[1].substr(0,10)}...${key[1].substr(-10,10)} ${cli.color.green(key[2])}`;
 }
 
 function* run(context, heroku) {
   let keys = yield heroku.get('/account/keys');
   if (context.flags.json) {
-    cli.log(JSON.stringify(keys, null, 2));
+    cli.styledJSON(keys);
   } else if (keys.length === 0) {
     cli.warn('You have no ssh keys.');
-  } else if (context.flags.long) {
-    keys.forEach(k => cli.log(k.public_key));
   } else {
-    keys.map(k => cli.log(formatKey(k.public_key)));
+    cli.styledHeader(`${cli.color.cyan(keys[0].email)} keys`);
+    if (context.flags.long) {
+      keys.forEach(k => cli.log(k.public_key));
+    } else {
+      keys.map(k => cli.log(formatKey(k.public_key)));
+    }
   }
 }
 

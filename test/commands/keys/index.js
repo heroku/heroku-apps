@@ -10,10 +10,11 @@ describe('heroku keys', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/account/keys')
       .reply(200, [
-        {public_key: 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine'}
+        {email: 'user@example.com', public_key: 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine'}
       ]);
     return cmd.run({flags: {}})
-    .then(() => expect(`ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine\n`).to.equal(cli.stdout))
+    .then(() => expect(`=== user@example.com keys
+ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine\n`).to.equal(cli.stdout))
     .then(() => expect('').to.equal(cli.stderr))
     .then(() => api.done());
   });
