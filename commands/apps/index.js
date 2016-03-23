@@ -25,8 +25,8 @@ function* run (context, heroku) {
 
   function print (apps, user) {
     if (apps.length === 0) {
-      if (space)    cli.log(`${cli.color.green(space)} has no apps.`);
-      else if (org) cli.log(`${cli.color.magenta(org)} has no apps.`);
+      if (space)    cli.log(`There are no apps in space ${cli.color.green(space)}.`);
+      else if (org) cli.log(`There are no apps in organization ${cli.color.magenta(org)}.`);
       else          cli.log('You have no apps.');
       return;
     } else if (space) {
