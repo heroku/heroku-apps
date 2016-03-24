@@ -16,7 +16,7 @@ function* run (context, heroku) {
     }
   }
 
-  let isOrgApp = app => !app.owner.email.endsWith('@herokumanager.com');
+  let isNotOrgApp = app => !app.owner.email.endsWith('@herokumanager.com');
 
   function listApps (apps) {
     apps.forEach(app => cli.log(regionizeAppName(app)));
@@ -60,7 +60,7 @@ function* run (context, heroku) {
     user: heroku.get('/account'),
   };
   let apps = _.sortBy(requests.apps, 'name');
-  if (!context.flags.all && !org && !space) apps = apps.filter(isOrgApp);
+  if (!context.flags.all && !org && !space) apps = apps.filter(isNotOrgApp);
   if (space) apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space));
 
   if (context.flags.json) {
