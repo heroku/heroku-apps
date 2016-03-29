@@ -19,7 +19,6 @@ let orgApp2 = {
   owner: {email: 'test-org@herokumanager.com'}
 };
 
-/*
 let orgSpaceApp1 = {
   name: 'space-app-1',
   owner: {email: 'test-org@herokumanager.com'},
@@ -31,7 +30,6 @@ let orgSpaceApp2 = {
   owner: {email: 'test-org@herokumanager.com'},
   space: {id: 'test-space-id', name: 'test-space'}
 };
-*/
 
 function stubApps(apps) {
   return nock('https://api.heroku.com')
@@ -108,8 +106,6 @@ org-app-2
     });
   });
 
-/*
-  // todo: need to translate space to an org
   describe("with space", function() {
     beforeEach(function() {
       return nock('https://api.heroku.com')
@@ -143,5 +139,4 @@ space-app-2
       });
     });
   });
-*/
 });
