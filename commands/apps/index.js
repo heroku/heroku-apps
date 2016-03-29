@@ -7,6 +7,7 @@ let _   = require('lodash');
 function* run (context, heroku) {
   let org = (!context.flags.personal && !context.flags.all && context.org) ? context.org : null;
   let space = context.flags.space;
+  if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name;
 
   function regionizeAppName (app) {
     if (app.region && app.region.name !== 'us') {
