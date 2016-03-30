@@ -23,9 +23,8 @@ function* run (context, heroku) {
     if (drains[0].length > 0) {
       let addons = yield drains[0].map(d => heroku.get(`/apps/${context.app}/addons/${d.addon.name}`));
       cli.styledHeader('Add-on Drains');
-      drains[0].forEach(drain => {
-        let addon = addons.find(a => a.name === drain.addon.name);
-        cli.log(`${cli.color.yellow(addon.plan.name)} (${cli.color.green(drain.addon.name)})`);
+      addons.forEach(addon => {
+        cli.log(`${cli.color.yellow(addon.plan.name)} (${cli.color.green(addon.name)})`);
       });
     }
   }
