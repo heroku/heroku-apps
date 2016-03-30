@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
+let _   = require('lodash');
 
 function* run (context, heroku) {
   let path = `/apps/${context.app}/log-drains`;
@@ -10,11 +11,23 @@ function* run (context, heroku) {
   if (context.flags.json) {
     cli.log(JSON.stringify(drains, null, 2));
   } else {
-    drains.forEach(function (drain) {
-      let output = `${cli.color.cyan(drain.url)} (${cli.color.green(drain.token)})`;
-      if (drain.extended) output = output + ` drain_id=${drain.extended.drain_id}`;
-      cli.log(output);
-    });
+    drains = _.partition(drains, 'addon');
+    if (drains[1].length > 0) {
+      cli.styledHeader('Drains');
+      drains[1].forEach(drain => {
+        let output = `${cli.color.cyan(drain.url)} (${cli.color.green(drain.token)})`;
+        if (drain.extended) output = output + ` drain_id=${drain.extended.drain_id}`;
+        cli.log(output);
+      });
+    }
+    if (drains[0].length > 0) {
+      let addons = yield drains[0].map(d => heroku.get(`/apps/${context.app}/addons/${d.addon.name}`));
+      cli.styledHeader('Add-on Drains');
+      drains[0].forEach(drain => {
+        let addon = addons.find(a => a.name === drain.addon.name);
+        cli.log(`${cli.color.yellow(addon.plan.name)} (${cli.color.green(drain.addon.name)})`);
+      });
+    }
   }
 }
 
