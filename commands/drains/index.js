@@ -9,7 +9,7 @@ function* run (context, heroku) {
   if (context.flags.extended) path = path + '?extended=true';
   let drains = yield heroku.request({path});
   if (context.flags.json) {
-    cli.log(JSON.stringify(drains, null, 2));
+    cli.styledJSON(drains);
   } else {
     drains = _.partition(drains, 'addon');
     if (drains[1].length > 0) {
