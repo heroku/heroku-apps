@@ -1,8 +1,10 @@
 'use strict';
 
-let co  = require('co');
-let cli = require('heroku-cli-util');
-let _   = require('lodash');
+let co    = require('co');
+let cli   = require('heroku-cli-util');
+let _     = require('lodash');
+let cache = require('../../lib/cache');
+let path  = require('path');
 
 function* run (context, heroku) {
   let org = (!context.flags.personal && !context.flags.all && context.org) ? context.org : null;
@@ -56,10 +58,19 @@ function* run (context, heroku) {
     }
   }
 
-  let requests = yield {
-    apps: org ? heroku.get(`/organizations/${org}/apps`) : heroku.get('/apps'),
-    user: heroku.get('/account'),
-  };
+  function fetch () {
+    return {
+      apps: org ? heroku.get(`/organizations/${org}/apps`) : heroku.get('/apps'),
+      user: heroku.get('/account'),
+    };
+  }
+
+  let requests;
+  if (context.flags.cache) {
+    requests = yield cache.get(path.join(context.herokuDir, 'cache', 'apps.json'), () => fetch());
+  } else {
+    requests = yield fetch();
+  }
   let apps = _.sortBy(requests.apps, 'name');
   if (!context.flags.all && !org && !space) apps = apps.filter(isNotOrgApp);
   if (space) apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space));
@@ -91,6 +102,7 @@ Example:
     {name: 'json', description: 'output in json format'},
     {name: 'space', hasValue: true, description: 'filter by space', hidden: true},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default org is set'},
+    {name: 'cache', description: 'cache results for a 20 minutes', hidden: true},
   ],
   run: cli.command(co.wrap(run))
 };
