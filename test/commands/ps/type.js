@@ -18,7 +18,7 @@ describe('ps:type', function() {
     .reply(200, [{type: 'web', quantity: 1, size: 'Hobby'}, {type: 'worker', quantity: 2, size: 'Hobby'}]);
 
     return cmd.run({app: 'myapp', args: ['hobby']})
-    .then(() => expect(cli.stdout).to.eq(`dyno    type   qty  cost/mo
+    .then(() => expect(cli.stdout).to.eq(`type    size   qty  cost/mo
 ──────  ─────  ───  ───────
 web     Hobby  1    7
 worker  Hobby  2    14\n`))
@@ -26,7 +26,7 @@ worker  Hobby  2    14\n`))
     .then(() => api.done());
   });
 
-  it.only('switches to standard-1x and standard-2x dynos', function() {
+  it('switches to standard-1x and standard-2x dynos', function() {
     let api = nock('https://api.heroku.com')
     .get('/apps/myapp/formation')
     .reply(200, [{type: 'web', quantity: 1, size: 'Free'}, {type: 'worker', quantity: 2, size: 'Free'}])
@@ -36,7 +36,7 @@ worker  Hobby  2    14\n`))
     .reply(200, [{type: 'web', quantity: 1, size: 'Standard-1X'}, {type: 'worker', quantity: 2, size: 'Standard-2X'}]);
 
     return cmd.run({app: 'myapp', args: ['web=standard-1x', 'worker=standard-2x']})
-    .then(() => expect(cli.stdout).to.eq(`dyno    type         qty  cost/mo
+    .then(() => expect(cli.stdout).to.eq(`type    size         qty  cost/mo
 ──────  ───────────  ───  ───────
 web     Standard-1X  1    25
 worker  Standard-2X  2    100\n`))
