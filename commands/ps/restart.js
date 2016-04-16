@@ -10,6 +10,7 @@ function* run (context, heroku) {
   let msg = 'Restarting';
   if (dyno) msg += ` ${cli.color.cyan(dyno)}`;
   msg += (dyno && dyno.indexOf('.') !== -1) ? ' dyno' : ' dynos';
+  msg += ` on ${cli.color.app(app)}`;
 
   yield cli.action(msg, co(function* () {
     yield heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`);

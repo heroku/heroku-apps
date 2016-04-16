@@ -9,7 +9,7 @@ function* run (context, heroku) {
   let dyno = context.args.dyno;
   let type = dyno.indexOf('.') !== -1 ? 'ps' : 'type';
 
-  yield cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'}`, co(function* () {
+  yield cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${cli.color.app(app)}`, co(function* () {
     yield heroku.request({
       method: 'POST',
       path: `/apps/${app}/ps/stop?` + qs.stringify({[type]: dyno}),
