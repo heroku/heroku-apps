@@ -7,17 +7,17 @@ let _      = require('lodash');
 function* run (context, heroku) {
   let git = require('../../lib/git')(context);
 
-  let oldApp = context.app;
-  let newApp = context.args.newname;
+  let oldApp = context.flags.from || context.app;
+  let newApp = context.flags.to || context.args.newname;
 
   let request = heroku.request({
     method: 'PATCH',
     path:   `/apps/${oldApp}`,
     body:   {name: newApp},
   });
-  let app = yield cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request);
+  let app = yield cli.action(`Renaming ${cli.color.app(oldApp)} to ${cli.color.app(newApp)}`, request);
   let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name);
-  cli.log(`${app.web_url} | ${gitUrl}`);
+  cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(gitUrl)}`);
 
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
@@ -44,15 +44,17 @@ This will locally update the git remote if it is set to the old app.
 
 Example:
 
-  $ heroku apps:rename --app oldname newname
+  $ heroku apps:rename --from oldname --to newname
   https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
   Git remote heroku updated
   `,
   needsAuth: true,
-  needsApp:  true,
-  args:  [{name: 'newname'}],
+  wantsApp:  true,
+  args:  [{name: 'newname', hidden: true, optional: true}],
   flags: [
     {name: 'ssh-git', description: 'use ssh git protocol instead of https'},
+    {name: 'from', description: 'current app name', hasValue: true},
+    {name: 'to', description: 'new app name', hasValue: true},
   ],
   run: cli.command(co.wrap(run))
 };
