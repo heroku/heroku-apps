@@ -9,6 +9,11 @@ let example = {
   owner: {email: 'foo@bar.com'}
 };
 
+let collabApp = {
+  name: 'collab-app',
+  owner: {email: 'someone-else@bar.com'}
+};
+
 let orgApp1 = {
   name: 'org-app-1',
   owner: {email: 'test-org@herokumanager.com'}
@@ -64,8 +69,8 @@ describe('heroku apps:list', function() {
       });
     });
 
-    it("list all user apps omitting org apps", function() {
-      let mock = stubApps([example, orgApp1]);
+    it("list all user and collab apps omitting org apps", function() {
+      let mock = stubApps([example, collabApp, orgApp1]);
       return apps.run({flags: {}, args: {}}).
       then(function() {
         mock.done();
@@ -74,6 +79,8 @@ describe('heroku apps:list', function() {
 `=== My Apps
 example
 
+=== Collaborated Apps
+collab-app  someone-else@bar.com
 `);
       });
     });
