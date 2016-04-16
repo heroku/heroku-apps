@@ -22,7 +22,7 @@ describe('ps:type', function() {
 ──────  ─────  ───  ───────
 web     Hobby  1    7
 worker  Hobby  2    14\n`))
-    .then(() => expect(cli.stderr).to.eq('Scaling dynos... done, now running web at 1:Hobby, worker at 2:Hobby\n'))
+    .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
     .then(() => api.done());
   });
 
@@ -40,7 +40,7 @@ worker  Hobby  2    14\n`))
 ──────  ───────────  ───  ───────
 web     Standard-1X  1    25
 worker  Standard-2X  2    100\n`))
-    .then(() => expect(cli.stderr).to.eq('Scaling dynos... done, now running web at 1:Standard-1X, worker at 2:Standard-2X\n'))
+    .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
     .then(() => api.done());
   });
 });

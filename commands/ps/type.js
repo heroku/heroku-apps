@@ -28,15 +28,6 @@ function* run (context, heroku) {
     }
   });
 
-  function scaleDynos (changes) {
-    return cli.action('Scaling dynos', {success: false}, co(function* () {
-      let formation = yield heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}});
-      let output = formation.filter(f => changes.find(c => c.type === f.type))
-      .map(d => `${cli.color.green(d.type)} at ${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`);
-      cli.console.error(`done, now running ${output.join(', ')}`);
-    }));
-  }
-
   let displayFormation = co.wrap(function* () {
     let formation = yield heroku.get(`/apps/${app}/formation`);
     formation = _.sortBy(formation, 'type');
@@ -60,7 +51,11 @@ function* run (context, heroku) {
   });
 
   let changes = yield parse(context.args);
-  if (changes.length > 0) yield scaleDynos(changes);
+  if (changes.length > 0) {
+    yield cli.action(`Scaling dynos on ${cli.color.app(app)}`,
+                     heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
+                    );
+  }
   yield displayFormation();
 }
 
