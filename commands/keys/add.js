@@ -1,13 +1,9 @@
 'use strict';
 
-let co  = require('co');
-let cli = require('heroku-cli-util');
+let co       = require('co');
+let cli      = require('heroku-cli-util');
 let inquirer = require('inquirer');
-
-function mkdirp (dir, opts) {
-  let mkdirp = require('mkdirp');
-  return new Promise((f, r) => mkdirp(dir, opts, err => err ? r(err) : f()));
-}
+let util     = require('../../lib/util');
 
 function sshKeygen (file) {
   let spawn = require('child_process').spawn;
@@ -25,7 +21,7 @@ function* run(context, heroku) {
   const sshdir = path.join(home(), '.ssh');
 
   let generate = co.wrap(function* () {
-    yield mkdirp(sshdir, {mode: 0o700});
+    yield util.mkdirp(sshdir, {mode: 0o700});
     yield sshKeygen(path.join(sshdir, 'id_rsa'));
   });
 
