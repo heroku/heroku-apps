@@ -2,15 +2,11 @@
 
 let co  = require('co');
 let cli = require('heroku-cli-util');
+let inquirer = require('inquirer');
 
 function mkdirp (dir, opts) {
   let mkdirp = require('mkdirp');
   return new Promise((f, r) => mkdirp(dir, opts, err => err ? r(err) : f()));
-}
-
-function prompt (questions) {
-  let inquirer = require('inquirer');
-  return new Promise(f => inquirer.prompt(questions, f));
 }
 
 function sshKeygen (file) {
@@ -37,7 +33,7 @@ function* run(context, heroku) {
     const defaultKey = path.join(sshdir, 'id_rsa.pub');
     if (!(yield fs.exists(defaultKey))) {
       cli.console.error('Could not find an existing ssh key at ~/.ssh/id_rsa.pub');
-      let resp = yield prompt([{
+      let resp = yield inquirer.prompt([{
         type: 'confirm',
         name: 'yes',
         message: 'Would you like to generate a new one?'
@@ -52,14 +48,14 @@ function* run(context, heroku) {
     if (keys.length === 1) {
       let key = keys[0];
       cli.console.error(`Found an SSH public key at ${cli.color.cyan(key)}`);
-      let resp = yield prompt([{
+      let resp = yield inquirer.prompt([{
         type: 'confirm',
         name: 'yes',
         message: 'Would you like to upload it to Heroku?'
       }]);
       if (resp.yes) return key;
     } else {
-      let resp = yield prompt([{
+      let resp = yield inquirer.prompt([{
         type: 'list',
         name: 'key',
         choices: keys,
