@@ -35,7 +35,7 @@ function* run (context, heroku) {
       type:      cli.color.green(d.type),
       size:      cli.color.cyan(d.size),
       qty:       cli.color.yellow(d.quantity.toString()),
-      'cost/mo': costs[d.size] ? (costs[d.size] * d.quantity).toString() : '0',
+      'cost/mo': costs[d.size] ? (costs[d.size] * d.quantity).toString() : '',
     }));
 
     if (formation.length === 0) throw new Error(`No process types on ${app}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`);
