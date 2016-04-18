@@ -7,12 +7,9 @@ function* run(context, heroku) {
   yield cli.action(`Removing ${cli.color.cyan(context.args.key)} ssh key`, co(function* () {
     let keys = yield heroku.get('/account/keys');
     if (keys.length === 0) throw new Error('No ssh keys on account');
-    let key = keys.find(k => k.comment === context.args.key);
-    if (!key) throw new Error(`SSH Key ${cli.color.red(context.args.key)} not found.\nFound keys: ${cli.color.yellow(keys.map(k => k.comment).join(', '))}.`);
-    yield heroku.request({
-      method: 'DELETE',
-      path:   `/account/keys/${key.id}`,
-    });
+    let toRemove = keys.filter(k => k.comment === context.args.key);
+    if (toRemove.length === 0) throw new Error(`SSH Key ${cli.color.red(context.args.key)} not found.\nFound keys: ${cli.color.yellow(keys.map(k => k.comment).join(', '))}.`);
+    yield Promise.all(toRemove.map(key => heroku.request({method: 'DELETE', path: `/account/keys/${key.id}`})));
   }));
 }
 
