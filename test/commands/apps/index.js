@@ -6,7 +6,14 @@ let apps   = require('../../../commands/apps/index.js');
 
 let example = {
   name: 'example',
-  owner: {email: 'foo@bar.com'}
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'}
+};
+
+let euApp = {
+  name: 'example-eu',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'eu'}
 };
 
 let collabApp = {
@@ -57,6 +64,7 @@ describe('heroku apps:list', function() {
     .get('/account')
     .reply(200, {email: 'foo@bar.com'});
   });
+  afterEach(() => nock.cleanAll());
 
   describe("with no args", function() {
     it("displays a message when the user has no apps", function() {
@@ -76,11 +84,35 @@ describe('heroku apps:list', function() {
         mock.done();
         expect(cli.stderr).to.equal('');
         expect(cli.stdout).to.equal(
-`=== My Apps
+`=== foo@bar.com Apps
 example
 
 === Collaborated Apps
 collab-app  someone-else@bar.com
+`);
+      });
+    });
+
+    it("shows as json", function() {
+      let mock = stubApps([example, collabApp, orgApp1]);
+      return apps.run({flags: {json: true}, args: {}}).
+      then(function() {
+        mock.done();
+        expect(cli.stderr).to.equal('');
+        expect(JSON.parse(cli.stdout)[0].name).to.equal('collab-app');
+      });
+    });
+
+    it("shows region if not us", function() {
+      let mock = stubApps([example, euApp]);
+      return apps.run({flags: {}, args: {}}).
+      then(function() {
+        mock.done();
+        expect(cli.stderr).to.equal('');
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+
 `);
       });
     });
