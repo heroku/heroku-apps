@@ -39,7 +39,7 @@ function* run (context, heroku) {
     } else {
       apps = _.partition(apps, app => app.owner.email === user.email);
       if (apps[0].length > 0) {
-        cli.styledHeader('My Apps');
+        cli.styledHeader(`${cli.color.cyan(user.email)} Apps`);
         listApps(apps[0]);
       }
 
