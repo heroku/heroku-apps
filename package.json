@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha && jshint .",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter",
     "preversion": "npm test && changelog heroku-apps all -m > CHANGELOG.md && git add CHANGELOG.md",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -39,7 +39,7 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "changelog": "1.0.7",
-    "coveralls": "2.11.9",
+    "codeclimate-test-reporter": "0.3.1",
     "fs-extra": "0.28.0",
     "jshint": "*",
     "mocha": "^2.3.3",
