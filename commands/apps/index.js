@@ -5,7 +5,7 @@ let cli = require('heroku-cli-util');
 let _   = require('lodash');
 
 function* run (context, heroku) {
-  let org = (!context.flags.personal && !context.flags.all && context.org) ? context.org : null;
+  let org = (!context.flags.personal && context.org) ? context.org : null;
   let space = context.flags.space;
   if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name;
 
