@@ -11,17 +11,17 @@ function* run (context, heroku) {
   id = id.startsWith('v') ? id.slice(1) : id;
   let release;
   if (id === 'current') {
-    release = (yield heroku.request({
+    let releases = yield heroku.request({
       path: `/apps/${context.app}/releases`,
       partial: true,
-      headers: { 'Range': `version ..; max=1, order=desc` },
-    }))[0];
-  } else {
-    release = yield heroku.request({
-      path:    `/apps/${context.app}/releases/${id}`,
-      headers: {Accept: 'application/json'},
+      headers: {Range: `version ..; max=2, order=desc`},
     });
+    id = releases[0].version;
   }
+  release = yield heroku.request({
+    path:    `/apps/${context.app}/releases/${id}`,
+    headers: {Accept: 'application/json'},
+  });
   if (context.flags.json) {
     cli.styledJSON(release);
   } else {
