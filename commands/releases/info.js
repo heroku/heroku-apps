@@ -1,7 +1,9 @@
 'use strict';
 
-let cli  = require('heroku-cli-util');
-let co   = require('co');
+let cli         = require('heroku-cli-util');
+let co          = require('co');
+let _           = require('lodash');
+let shellescape = require('shell-escape');
 
 function* run (context, heroku) {
   // TODO: find out how to get config vars and addons data in apiv3 or deprecate this command
@@ -33,7 +35,11 @@ function* run (context, heroku) {
     cli.log();
     if (release.env) {
       cli.styledHeader(`${cli.color.cyan(release.name)} Config vars`);
-      cli.styledObject(release.env);
+      if (context.flags.shell) {
+        _.forEach(release.env, (v, k) => cli.log(`${k}=${shellescape([v])}`));
+      } else {
+        cli.styledObject(release.env);
+      }
     }
   }
 }
@@ -47,6 +53,7 @@ module.exports = {
   args: [{name: 'release', optional: true}],
   flags: [
     {name: 'json', description: 'output in json format'},
+    {name: 'shell', char: 's', description: 'output in shell format'},
   ],
   run: cli.command(co.wrap(run))
 };
