@@ -13,6 +13,20 @@ function sshKeygen (file, quiet) {
   });
 }
 
+function confirmPrompt(message) {
+  if (process.stdin.isTTY) {
+    return inquirer.prompt([{
+      type: 'confirm',
+      name: 'yes',
+      message: message
+    }]);
+  } else {
+    return cli.prompt(message + ' [Y/n]').then(function(data) {
+      return {yes: /^y(es)?/i.test(data)};
+    });
+  }
+}
+
 function* run(context, heroku) {
   let fs   = require('mz/fs');
   let path = require('path');
@@ -31,11 +45,7 @@ function* run(context, heroku) {
       cli.console.error('Could not find an existing SSH key at ~/.ssh/id_rsa.pub');
 
       if (! context.flags.yes) {
-        let resp = yield inquirer.prompt([{
-          type: 'confirm',
-          name: 'yes',
-          message: 'Would you like to generate a new one?'
-        }]);
+        let resp = yield confirmPrompt('Would you like to generate a new one?');
         if (!resp.yes) return;
       }
 
@@ -50,11 +60,7 @@ function* run(context, heroku) {
       cli.console.error(`Found an SSH public key at ${cli.color.cyan(key)}`);
 
       if (! context.flags.yes) {
-        let resp = yield inquirer.prompt([{
-          type: 'confirm',
-          name: 'yes',
-          message: 'Would you like to upload it to Heroku?'
-        }]);
+        let resp = yield confirmPrompt('Would you like to upload it to Heroku?');
         if (!resp.yes) return;
       }
 
