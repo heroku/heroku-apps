@@ -29,12 +29,16 @@ function* run(context, heroku) {
     const defaultKey = path.join(sshdir, 'id_rsa.pub');
     if (!(yield fs.exists(defaultKey))) {
       cli.console.error('Could not find an existing SSH key at ~/.ssh/id_rsa.pub');
-      let resp = yield inquirer.prompt([{
-        type: 'confirm',
-        name: 'yes',
-        message: 'Would you like to generate a new one?'
-      }]);
-      if (!resp.yes) return;
+
+      if (! context.flags.yes) {
+        let resp = yield inquirer.prompt([{
+          type: 'confirm',
+          name: 'yes',
+          message: 'Would you like to generate a new one?'
+        }]);
+        if (!resp.yes) return;
+      }
+
       yield generate();
       return defaultKey;
     }
@@ -44,12 +48,17 @@ function* run(context, heroku) {
     if (keys.length === 1) {
       let key = keys[0];
       cli.console.error(`Found an SSH public key at ${cli.color.cyan(key)}`);
-      let resp = yield inquirer.prompt([{
-        type: 'confirm',
-        name: 'yes',
-        message: 'Would you like to upload it to Heroku?'
-      }]);
-      if (resp.yes) return key;
+
+      if (! context.flags.yes) {
+        let resp = yield inquirer.prompt([{
+          type: 'confirm',
+          name: 'yes',
+          message: 'Would you like to upload it to Heroku?'
+        }]);
+        if (!resp.yes) return;
+      }
+
+      return key;
     } else {
       let resp = yield inquirer.prompt([{
         type: 'list',
@@ -99,6 +108,9 @@ Examples:
 `,
   needsAuth: true,
   args: [{name: 'key', optional: true}],
-  flags: [{name: 'quiet', hidden: true}],
+  flags: [
+    {name: 'quiet', hidden: true},
+    {name: 'yes', char: 'y', description: 'automatically answer yes for all prompts'}
+  ],
   run: cli.command(co.wrap(run))
 };
