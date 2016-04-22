@@ -70,7 +70,7 @@ describe('keys:add', () => {
     };
 
     return fs.copyAsync('./test/fixtures/id_rsa.pub', home+'/.ssh/id_rsa.pub')
-    .then(() => cmd.run({args: {}}))
+    .then(() => cmd.run({args: {}, flags: {}}))
     .then(() => expect(cli.stdout, 'to be empty'))
     .then(() => expect(cli.stderr, 'to equal', 'Found an SSH public key at tmp/home/.ssh/id_rsa.pub\nUploading tmp/home/.ssh/id_rsa.pub SSH key... done\n'))
     .then(() => api.done());
