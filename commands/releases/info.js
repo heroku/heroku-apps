@@ -16,7 +16,7 @@ function* run (context, heroku) {
       path: `/apps/${context.app}/releases`,
       partial: true,
       headers: {
-        Range: `version ..; max=2, order=desc`,
+        Range: `version ..; max=1, order=desc`,
         Accept: `application/vnd.heroku+json; version=3.release_status`
       },
     });
