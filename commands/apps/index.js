@@ -19,8 +19,6 @@ function * run (context, heroku) {
     }
   }
 
-  let isNotOrgApp = (app) => !app.owner.email.endsWith('@herokumanager.com')
-
   function listApps (apps) {
     apps.forEach((app) => cli.log(regionizeAppName(app)))
     cli.log()
@@ -58,18 +56,22 @@ function * run (context, heroku) {
     }
   }
 
-  let requests = yield {
-    apps: org ? heroku.get(`/organizations/${org}/apps`) : heroku.get('/apps'),
-    user: heroku.get('/account')
+  let path = '/users/~/apps'
+  if (org) path = `/organizations/${org}/apps`
+  else if (space || context.flags.all) path = '/apps'
+  let [apps, user] = yield [
+    heroku.get(path),
+    heroku.get('/account')
+  ]
+  apps = sortBy(apps, 'name')
+  if (space) {
+    apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space))
   }
-  let apps = sortBy(requests.apps, 'name')
-  if (!context.flags.all && !org && !space) apps = apps.filter(isNotOrgApp)
-  if (space) apps = apps.filter((a) => a.space && (a.space.name === space || a.space.id === space))
 
   if (context.flags.json) {
     cli.styledJSON(apps)
   } else {
-    print(apps, requests.user)
+    print(apps, user)
   }
 }
 
