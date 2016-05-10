@@ -9,10 +9,42 @@ const strftime = require('strftime')
 
 const hourAgo = new Date(new Date() - 60 * 60 * 1000)
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
-const hourAhead = new Date(new Date().getTime() + 60 * 60 * 1000)
+
+function stubHobbyApp () {
+  nock('https://api.heroku.com:443', {
+    reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
+  })
+    .get('/apps/myapp')
+    .reply(200, {process_tier: 'hobby'})
+}
+
+function stubAccountQuota (code, body) {
+  nock('https://api.heroku.com:443')
+    .get('/apps/myapp/dynos')
+    .reply(200, [])
+
+  nock('https://api.heroku.com:443', {
+    reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
+  })
+    .get('/apps/myapp')
+    .reply(200, {process_tier: 'free'})
+
+  nock('https://api.heroku.com:443')
+    .get('/account')
+    .reply(200, {id: '1234'})
+
+  nock('https://api.heroku.com:443', {
+    reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.account-quotas'}
+  })
+    .get('/accounts/1234/actions/get-quota')
+    .reply(code, body)
+}
 
 describe('ps', function () {
-  beforeEach(() => cli.mockConsole())
+  beforeEach(function () {
+    cli.mockConsole()
+    nock.cleanAll()
+  })
 
   it('shows dyno list', function () {
     let api = nock('https://api.heroku.com:443')
@@ -21,6 +53,9 @@ describe('ps', function () {
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
         {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
       ])
+
+    stubHobbyApp()
+
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
@@ -39,22 +74,11 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
       .reply(200, [
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'}
       ])
+
+    stubHobbyApp()
+
     return cmd.run({app: 'myapp', flags: {json: true}})
       .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {command: 'npm start'}))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
-  })
-
-  it('shows free time remaining', function () {
-    let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/actions/get-quota')
-      .reply(200, {allow_until: hourAhead})
-      .get('/apps/myapp/dynos')
-      .reply(200)
-
-    let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
-    return cmd.run({app: 'myapp', flags: {}})
-      .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -70,6 +94,9 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
           region: 'us', instance: 'instance', port: 8000, az: 'us-east', route: 'da route'
         }}
       ])
+
+    stubHobbyApp()
+
     return cmd.run({app: 'myapp', flags: {extended: true}})
       .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────  ───────  ───────  ─────────  ────────  ────
@@ -78,5 +105,68 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
+  })
+
+  it('shows free quota remaining', function () {
+    stubAccountQuota(200, {account_quota: 1000, quota_used: 1})
+
+    let freeExpression =
+`Free dyno hours quota remaining this month: 999 hrs (99%)
+For more information on dyno sleeping and how to upgrade, see:
+https://devcenter.heroku.com/articles/dyno-sleeping
+
+`
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+  })
+
+  it('shows free quota remaining even when account_quota is zero', function () {
+    stubAccountQuota(200, {account_quota: 0, quota_used: 0})
+
+    let freeExpression =
+`Free dyno hours quota remaining this month: 0 hrs (0%)
+For more information on dyno sleeping and how to upgrade, see:
+https://devcenter.heroku.com/articles/dyno-sleeping
+
+`
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+  })
+
+  it('handles quota 404 properly', function () {
+    stubAccountQuota(404, {id: 'not_found'})
+
+    let freeExpression = ''
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+  })
+
+  it('does not print out for non-free apps', function () {
+    stubHobbyApp()
+
+    let dynos = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/dynos')
+      .reply(200, [])
+
+    let freeExpression = ''
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => dynos.done())
+  })
+
+  it('propegates quota 503 properly', function () {
+    stubAccountQuota(503, {id: 'server_error'})
+
+    let freeExpression = ''
+    let thrown = false
+    return cmd.run({app: 'myapp', flags: {}})
+      .catch(function () { thrown = true })
+      .then(() => expect(thrown, 'to equal', true))
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
   })
 })

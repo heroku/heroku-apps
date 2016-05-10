@@ -10,18 +10,6 @@ let trunc = (s) => _.truncate(s, {length: 35, omission: '…'})
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
-function printQuota (quota) {
-  if (!quota) return
-  let lbl
-  if (quota.allow_until) lbl = 'Free quota left'
-  else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in'
-  if (lbl) {
-    let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until)
-    let timeRemaining = time.remaining(new Date(), timestamp)
-    cli.log(`${lbl}: ${timeRemaining}`)
-  }
-}
-
 function printExtended (dynos) {
   dynos = _.sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
   cli.table(dynos, {
@@ -39,6 +27,41 @@ function printExtended (dynos) {
       {key: 'size', label: 'Size'}
     ]
   })
+}
+
+function * printAccountQuota (heroku, app) {
+  if (app.process_tier !== 'free') {
+    return
+  }
+
+  let account = yield heroku.request({path: '/account'})
+
+  let quota = yield heroku.request({
+    path: `/accounts/${account.id}/actions/get-quota`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}
+  })
+  .catch(function (err) {
+    if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
+      return null
+    }
+    throw err
+  })
+
+  if (!quota) return
+
+  let remaining, percentage
+  if (quota.account_quota === 0) {
+    remaining = 0
+    percentage = 0
+  } else {
+    remaining = quota.account_quota - quota.quota_used
+    percentage = Math.floor(remaining / quota.account_quota * 100)
+  }
+
+  cli.log(`Free dyno hours quota remaining this month: ${remaining} hrs (${percentage}%)`)
+  cli.log('For more information on dyno sleeping and how to upgrade, see:')
+  cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
+  cli.log()
 }
 
 function printDynos (dynos) {
@@ -70,19 +93,19 @@ function printDynos (dynos) {
 function * run (context, heroku) {
   let suffix = context.flags.extended ? '?extended=true' : ''
   let data = yield {
-    quota: heroku.request({
-      path: `/apps/${context.app}/actions/get-quota${suffix}`,
-      method: 'post', headers: {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
-    }).catch(() => {
+    app: heroku.request({
+      path: `/apps/${context.app}`,
+      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
     }),
     dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`})
   }
+
   if (context.flags.json) {
     cli.styledJSON(data.dynos)
   } else if (context.flags.extended) {
     printExtended(data.dynos)
   } else {
-    printQuota(data.quota)
+    yield printAccountQuota(heroku, data.app)
     printDynos(data.dynos)
   }
 }
