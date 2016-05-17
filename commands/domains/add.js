@@ -33,6 +33,6 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'hostname'}],
-  flags: [{name: 'wait', hasValue: false}],
+  flags: [{name: 'wait'}],
   run: cli.command(co.wrap(run))
 }
