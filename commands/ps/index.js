@@ -10,6 +10,18 @@ let trunc = (s) => _.truncate(s, {length: 35, omission: '…'})
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
+function printQuota (quota) {
+  if (!quota) return
+  let lbl
+  if (quota.allow_until) lbl = 'Free quota left'
+  else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in'
+  if (lbl) {
+    let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until)
+    let timeRemaining = time.remaining(new Date(), timestamp)
+    cli.log(`${lbl}: ${timeRemaining}`)
+  }
+}
+
 function printExtended (dynos) {
   dynos = _.sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
   cli.table(dynos, {
@@ -29,15 +41,21 @@ function printExtended (dynos) {
   })
 }
 
-function * printAccountQuota (heroku, app) {
-  if (app.process_tier !== 'free') {
+function * printAccountQuota (context, heroku) {
+  let requests = yield {
+    app: heroku.request({
+      path: `/apps/${context.app}`,
+      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
+    }),
+    account: heroku.request({path: '/account'})
+  }
+
+  if (requests.app.process_tier !== 'free') {
     return
   }
 
-  let account = yield heroku.request({path: '/account'})
-
   let quota = yield heroku.request({
-    path: `/accounts/${account.id}/actions/get-quota`,
+    path: `/accounts/${requests.account.id}/actions/get-quota`,
     headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}
   })
   .catch(function (err) {
@@ -92,12 +110,23 @@ function printDynos (dynos) {
 
 function * run (context, heroku) {
   let suffix = context.flags.extended ? '?extended=true' : ''
+
+  let feature = heroku.request({path: '/account/features/free-2016'})
+    .catch(function (err) {
+      if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
+        return {enabled: false}
+      }
+      throw err
+    })
+
   let data = yield {
-    app: heroku.request({
-      path: `/apps/${context.app}`,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
+    quota: heroku.request({
+      path: `/apps/${context.app}/actions/get-quota${suffix}`,
+      method: 'post', headers: {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
+    }).catch(() => {
     }),
-    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`})
+    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
+    feature
   }
 
   if (context.flags.json) {
@@ -105,7 +134,11 @@ function * run (context, heroku) {
   } else if (context.flags.extended) {
     printExtended(data.dynos)
   } else {
-    yield printAccountQuota(heroku, data.app)
+    if (data.feature.enabled) {
+      yield printAccountQuota(context, heroku)
+    } else {
+      printQuota(data.quota)
+    }
     printDynos(data.dynos)
   }
 }

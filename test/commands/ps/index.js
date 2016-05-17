@@ -9,16 +9,23 @@ const strftime = require('strftime')
 
 const hourAgo = new Date(new Date() - 60 * 60 * 1000)
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
+const hourAhead = new Date(new Date().getTime() + 60 * 60 * 1000)
 
-function stubHobbyApp () {
-  nock('https://api.heroku.com:443', {
-    reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
-  })
-    .get('/apps/myapp')
-    .reply(200, {process_tier: 'hobby'})
+function stubAccountFeature (code, body) {
+  nock('https://api.heroku.com:443')
+    .get('/account/features/free-2016')
+    .reply(code, body)
+}
+
+function stubAccountFeatureDisabled () {
+  stubAccountFeature(404, {id: 'not_found'})
 }
 
 function stubAccountQuota (code, body) {
+  nock('https://api.heroku.com:443')
+    .get('/account/features/free-2016')
+    .reply(200, {enabled: true})
+
   nock('https://api.heroku.com:443')
     .get('/apps/myapp/dynos')
     .reply(200, [])
@@ -54,7 +61,7 @@ describe('ps', function () {
         {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
       ])
 
-    stubHobbyApp()
+    stubAccountFeatureDisabled()
 
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== web (Free): npm start (1)
@@ -75,10 +82,42 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'}
       ])
 
-    stubHobbyApp()
+    stubAccountFeatureDisabled()
 
     return cmd.run({app: 'myapp', flags: {json: true}})
       .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {command: 'npm start'}))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows free time remaining when free-2016 not found', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/apps/myapp/actions/get-quota')
+      .reply(200, {allow_until: hourAhead})
+      .get('/apps/myapp/dynos')
+      .reply(200)
+
+    stubAccountFeature(404, {id: 'not_found'})
+
+    let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to match', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows free time remaining when free-2016 not enabled', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/apps/myapp/actions/get-quota')
+      .reply(200, {allow_until: hourAhead})
+      .get('/apps/myapp/dynos')
+      .reply(200)
+
+    stubAccountFeature(200, {enabled: false})
+
+    let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -95,7 +134,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
         }}
       ])
 
-    stubHobbyApp()
+    stubAccountFeatureDisabled()
 
     return cmd.run({app: 'myapp', flags: {extended: true}})
       .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  Port  AZ       Release  Command    Route     Size
@@ -145,7 +184,17 @@ https://devcenter.heroku.com/articles/dyno-sleeping
   })
 
   it('does not print out for non-free apps', function () {
-    stubHobbyApp()
+    stubAccountFeature(200, {enabled: true})
+
+    nock('https://api.heroku.com:443')
+      .get('/account')
+      .reply(200, {id: '1234'})
+
+    nock('https://api.heroku.com:443', {
+      reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
+    })
+      .get('/apps/myapp')
+      .reply(200, {process_tier: 'hobby'})
 
     let dynos = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
