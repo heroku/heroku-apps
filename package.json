@@ -9,6 +9,7 @@
   "dependencies": {
     "bluebird": "3.3.5",
     "co": "4.6.0",
+    "co-wait": "0.0.0",
     "filesize": "3.2.1",
     "heroku-cli-util": "5.10.10",
     "inquirer": "1.0.2",
