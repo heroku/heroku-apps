@@ -124,7 +124,7 @@ FOO: foo
       .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, {
         description: 'something changed',
-        status: 'failure',
+        status: 'failed',
         user: { email: 'foo@foo.com' },
         created_at: d,
         version: 10
