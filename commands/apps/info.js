@@ -6,7 +6,6 @@ const cli = require('heroku-cli-util')
 function * run (context, heroku) {
   const filesize = require('filesize')
   const util = require('util')
-  const S = require('string')
   const countBy = require('lodash.countby')
 
   function getInfo (app) {
@@ -58,7 +57,7 @@ function * run (context, heroku) {
 
   function shell () {
     function print (k, v) {
-      cli.log(`${S(k).slugify()}=${v}`)
+      cli.log(`${k}=${v}`)
     }
     print('addons', addons)
     print('collaborators', collaborators)
