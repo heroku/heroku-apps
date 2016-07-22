@@ -33,9 +33,7 @@ To undo, run: ${cli.color.cmd('heroku rollback v' + (latest.version - 1))}`)
   }))
 }
 
-module.exports = {
-  topic: 'releases',
-  command: 'rollback',
+const cmd = {
   description: 'rollback to a previous release',
   help: 'If RELEASE is not specified, it will rollback one release',
   needsApp: true,
@@ -43,3 +41,6 @@ module.exports = {
   args: [{name: 'release', optional: true}],
   run: cli.command(co.wrap(run))
 }
+
+exports.releases = Object.assign({topic: 'releases', command: 'rollback'}, cmd)
+exports.root = Object.assign({topic: 'rollback', hidden: true}, cmd)
