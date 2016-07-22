@@ -104,5 +104,6 @@ exports.commands = [
   require('./commands/regions'),
   require('./commands/releases'),
   require('./commands/releases/info'),
-  require('./commands/releases/rollback')
+  require('./commands/releases/rollback').releases,
+  require('./commands/releases/rollback').root
 ]
