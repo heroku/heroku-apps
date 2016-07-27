@@ -8,9 +8,9 @@ function * run (context, heroku) {
 
   let regions = yield heroku.get('/regions')
   if (context.flags.private) {
-    regions = regions.filter((region) => { return region.private_capable })
+    regions = regions.filter(region => region.private_capable)
   } else if (context.flags.common) {
-    regions = regions.filter((region) => { return !region.private_capable })
+    regions = regions.filter(region => !region.private_capable)
   }
   regions = sortBy(regions, ['private_capable', 'name'])
 
