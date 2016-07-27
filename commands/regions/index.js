@@ -5,9 +5,16 @@ const co = require('co')
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
+  const filter = require('lodash.filter')
 
   let regions = yield heroku.get('/regions')
+  if (context.flags.private) {
+    regions = filter(regions, { 'private_capable': true })
+  } else if (context.flags.common) {
+    regions = filter(regions, { 'private_capable': false })
+  }
   regions = sortBy(regions, ['private_capable', 'name'])
+
   if (context.flags.json) {
     cli.log(JSON.stringify(regions, 0, 2))
   } else {
@@ -26,7 +33,9 @@ module.exports = {
   description: 'list available regions for deployment',
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    {name: 'json', description: 'output in json format'},
+    {name: 'private', description: 'show regions for private spaces'},
+    {name: 'common', description: 'show regions for common runtime'}
   ],
   run: cli.command(co.wrap(run))
 }
