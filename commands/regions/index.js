@@ -5,13 +5,12 @@ const co = require('co')
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
-  const filter = require('lodash.filter')
 
   let regions = yield heroku.get('/regions')
   if (context.flags.private) {
-    regions = filter(regions, { 'private_capable': true })
+    regions = regions.filter((region) => { return region.private_capable })
   } else if (context.flags.common) {
-    regions = filter(regions, { 'private_capable': false })
+    regions = regions.filter((region) => { return !region.private_capable })
   }
   regions = sortBy(regions, ['private_capable', 'name'])
 
