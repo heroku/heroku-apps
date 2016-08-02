@@ -58,7 +58,7 @@ function * run (context, heroku) {
 
   let path = '/users/~/apps'
   if (org) path = `/organizations/${org}/apps`
-  else if (space || context.flags.all) path = '/apps'
+  else if (context.flags.all) path = '/apps'
   let [apps, user] = yield [
     heroku.get(path),
     heroku.get('/account')
@@ -92,7 +92,7 @@ Example:
   flags: [
     {name: 'all', char: 'A', description: 'include apps in all organizations'},
     {name: 'json', description: 'output in json format'},
-    {name: 'space', hasValue: true, description: 'filter by space', hidden: true},
+    {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default org is set'}
   ],
   run: cli.command(co.wrap(run))
