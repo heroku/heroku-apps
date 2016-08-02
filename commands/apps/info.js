@@ -19,7 +19,8 @@ function * run (context, heroku) {
     }
   }
 
-  let app = context.args.app || context.app
+  if (context.args.app) context.app = context.args.app
+  let app = context.app
   if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app')
   let info = yield getInfo(app)
   let addons = info.addons.map(a => a.plan.name).sort()
