@@ -3,64 +3,63 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 
-function * run (context, heroku) {
-  const shellescape = require('shell-escape')
+function render (opts) {
+  const {release, config, context, v2} = opts
   const statusHelper = require('./status_helper')
+  const shellescape = require('shell-escape')
   const forEach = require('lodash.foreach')
-  // TODO: find out how to get config vars and addons data in apiv3 or deprecate this command
+
+  let releaseChange = release.description
+  let status = statusHelper(release.status)
+  if (status.content !== undefined) {
+    releaseChange += ' (' + cli.color[status.color](status.content) + ')'
+  }
+
+  cli.styledHeader(`Release ${cli.color.cyan('v' + release.version)}`)
+  cli.styledObject({
+    'Add-ons': v2 ? v2.addons : null,
+    Change: releaseChange,
+    By: release.user.email,
+    When: release.created_at
+  })
+  if (config) {
+    cli.log()
+    cli.styledHeader(`${cli.color.cyan('v' + release.version)} Config vars`)
+    if (context.flags.shell) {
+      forEach(config, (v, k) => cli.log(`${k}=${shellescape([v])}`))
+    } else {
+      cli.styledObject(config)
+    }
+  }
+}
+
+function * run (context, heroku) {
+  function latestReleaseID () {
+    return heroku.get(`/apps/${app}/releases`, {
+      partial: true,
+      headers: {Range: 'version ..; max=1, order=desc'}
+    }).then(releases => releases[0].version)
+  }
+
+  const {app} = context
   let id = (context.args.release || 'current').toLowerCase()
   id = id.startsWith('v') ? id.slice(1) : id
-  let release
-  if (id === 'current') {
-    let releases = yield heroku.request({
-      path: `/apps/${context.app}/releases`,
-      partial: true,
-      headers: {
-        Range: 'version ..; max=1, order=desc'
-      }
-    })
-    id = releases[0].version
-  }
+  if (id === 'current') id = yield latestReleaseID()
 
-  release = yield {
-    v3: heroku.request({
-      path: `/apps/${context.app}/releases/${id}`,
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3'
-      }
-    }),
-    // TODO: move to use API V3 once an endpoint to fetch a release config vars is available
-    v2: heroku.request({
-      path: `/apps/${context.app}/releases/${id}`,
+  let [release, config, v2] = yield [
+    heroku.get(`/apps/${app}/releases/${id}`),
+    heroku.get(`/apps/${app}/releases/${id}/config-vars`).catch(() => {}),
+    heroku.get(`/apps/${app}/releases/${id}`, {
       headers: {Accept: 'application/json'}
     }).catch(() => {})
-  }
+  ]
 
   if (context.flags.json) {
-    cli.styledJSON(release.v3)
+    release.config = config
+    if (v2) release.addons = v2.addons
+    cli.styledJSON(release)
   } else {
-    let releaseChange = release.v3.description
-    let status = statusHelper(release.v3.status)
-    if (status.content !== undefined) {
-      releaseChange += ' (' + cli.color[status.color](status.content) + ')'
-    }
-
-    cli.styledHeader(`Release ${cli.color.cyan('v' + release.v3.version)}`)
-    cli.styledObject({
-      'Add-ons': release.v2 ? release.v2.addons : null,
-      Change: releaseChange,
-      By: release.v3.user.email,
-      When: release.v3.created_at
-    })
-    if (release.v2 && release.v2.env) {
-      cli.log()
-      cli.styledHeader(`${cli.color.cyan('v' + release.v3.version)} Config vars`)
-      if (context.flags.shell) {
-        forEach(release.v2.env, (v, k) => cli.log(`${k}=${shellescape([v])}`))
-      } else {
-        cli.styledObject(release.v2.env)
-      }
-    }
+    render({release, config, context, v2})
   }
 }
 

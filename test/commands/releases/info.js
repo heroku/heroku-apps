@@ -21,10 +21,8 @@ describe('releases:info', function () {
     version: 10
   }
 
-  let v2release = {
-    addons: ['addon1', 'addon2'],
-    env: {FOO: 'foo', BAR: 'bar'}
-  }
+  let config = {FOO: 'foo', BAR: 'bar'}
+  let v2release = {addons: ['addon1', 'addon2']}
 
   it('shows most recent release info', function () {
     let api = nock('https://api.heroku.com:443')
@@ -36,6 +34,8 @@ describe('releases:info', function () {
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
       .reply(200, v2release)
+      .get('/apps/myapp/releases/10/config-vars')
+      .reply(200, config)
     return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
 Add-ons: addon1
@@ -62,6 +62,8 @@ FOO: foo
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
       .reply(200, v2release)
+      .get('/apps/myapp/releases/10/config-vars')
+      .reply(200, config)
     return cmd.run({app: 'myapp', flags: {shell: true}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
 Add-ons: addon1
@@ -86,6 +88,8 @@ BAR=bar
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
       .reply(200, v2release)
+      .get('/apps/myapp/releases/10/config-vars')
+      .reply(200, config)
     return cmd.run({app: 'myapp', flags: {}, args: {release: 'v10'}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
 Add-ons: addon1
@@ -110,6 +114,8 @@ FOO: foo
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
       .reply(200, v2release)
+      .get('/apps/myapp/releases/10/config-vars')
+      .reply(200, config)
     return cmd.run({app: 'myapp', flags: {json: true}, args: {release: 'v10'}})
       .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {version: 10}))
       .then(() => expect(cli.stderr, 'to be empty'))
@@ -155,6 +161,8 @@ When:    ${d.toISOString()}
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
       .reply(200, v2release)
+      .get('/apps/myapp/releases/10/config-vars')
+      .reply(200, config)
     return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
 Add-ons: addon1
