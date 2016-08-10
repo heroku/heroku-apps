@@ -1,17 +1,21 @@
 'use strict'
 
-function pendingDescription (release, runningRelease) {
-  if (runningRelease !== undefined && runningRelease.id === release.id) {
+function pendingDescription (release, runningRelease, runningSlug) {
+  if (
+    runningRelease !== undefined &&
+    runningRelease.id === release.id &&
+    (runningSlug.process_types || {}).release !== undefined
+  ) {
     return 'release command executing'
   } else {
     return 'pending'
   }
 }
 
-module.exports.description = function (release, runningRelease) {
+module.exports.description = function (release, runningRelease, runningSlug) {
   switch (release.status) {
     case 'pending':
-      return pendingDescription(release, runningRelease)
+      return pendingDescription(release, runningRelease, runningSlug)
     case 'failed':
       return 'release command failed'
     default:
