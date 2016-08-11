@@ -13,7 +13,7 @@ function * run (context, heroku) {
     const trunc = (s, l) => truncate(s, {length: width() - (60 + l), omission: '…'})
     let status = statusHelper.description(r, runningRelease, runningSlug)
     let sc = ''
-    if (status !== undefined) {
+    if (status) {
       sc = cli.color[statusHelper.color(r.status)](status)
     }
     return trunc(d, sc.length) + ' ' + sc
@@ -31,15 +31,13 @@ function * run (context, heroku) {
 
   let header = `${context.app} Releases`
   let currentRelease = releases.filter((r) => r.current === true)[0]
-  if (currentRelease !== undefined) {
+  if (currentRelease) {
     header += ' - ' + cli.color['blue'](`Current: v${currentRelease.version}`)
   }
   let runningRelease = releases.filter((r) => r.status === 'pending').slice(-1)[0]
   let runningSlug
-  if (runningRelease !== undefined) {
-    runningSlug = yield heroku.request({
-      path: `/apps/${context.app}/slugs/${runningRelease.slug.id}`
-    })
+  if (runningRelease) {
+    runningSlug = yield heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
   }
 
   if (context.flags.json) {

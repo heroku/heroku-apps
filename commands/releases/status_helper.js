@@ -1,11 +1,7 @@
 'use strict'
 
 function pendingDescription (release, runningRelease, runningSlug) {
-  if (
-    runningRelease !== undefined &&
-    runningRelease.id === release.id &&
-    (runningSlug.process_types || {}).release !== undefined
-  ) {
+  if (runningRelease && runningRelease.id === release.id && runningSlug.process_types && runningSlug.process_types.release) {
     return 'release command executing'
   } else {
     return 'pending'
