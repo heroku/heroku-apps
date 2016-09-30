@@ -88,5 +88,5 @@ module.exports = [
   Object.assign({}, cmd, {topic: 'ps', command: 'resize'}),
   Object.assign({}, cmd, {topic: 'resize', hidden: true}),
   Object.assign({}, cmd, {topic: 'dyno', command: 'type', hidden: true}),
-  Object.assign({}, cmd, {topic: 'dyno', command: 'resize'})
+  Object.assign({}, cmd, {topic: 'dyno', command: 'resize', hidden: true})
 ]
