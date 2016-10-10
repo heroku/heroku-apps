@@ -37,7 +37,7 @@ function * run (context, heroku) {
 
   function routerErrors () {
     return heroku.request({
-      host: 'api.metrics.herokai.com',
+      host: 'api.metrics.heroku.com',
       path: `/apps/${context.app}/router-metrics/errors?${DATE}&process_type=web`,
       headers: {Range: ''}
     }).then((rsp) => {
@@ -48,7 +48,7 @@ function * run (context, heroku) {
 
   function dynoErrors (type) {
     return heroku.request({
-      host: 'api.metrics.herokai.com',
+      host: 'api.metrics.heroku.com',
       path: `/apps/${context.app}/formation/${type}/metrics/errors?${DATE}`,
       headers: {Range: ''}
     }).then((rsp) => {

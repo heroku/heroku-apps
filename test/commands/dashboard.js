@@ -100,7 +100,7 @@ See other CLI commands with heroku help
         .get('/apps/myapp/formation').reply(200, formation)
       let telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications').reply(200, [])
-      let metrics = nock('https://api.metrics.herokai.com:443')
+      let metrics = nock('https://api.metrics.heroku.com:443')
         .get(`/apps/myapp/router-metrics/status?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
         .reply(200, router.status)
         .get(`/apps/myapp/router-metrics/latency?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)

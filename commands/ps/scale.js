@@ -32,7 +32,7 @@ function * run (context, heroku) {
     let monitors
     try {
       const appID = (yield heroku.get(`/apps/${app}`)).id // TODO: metrics api will eventually not require app ID
-      monitors = yield heroku.get(`/apps/${appID}/formation/web/monitors`, {host: 'api.metrics.herokai.com'})
+      monitors = yield heroku.get(`/apps/${appID}/formation/web/monitors`, {host: 'api.metrics.heroku.com'})
     } catch (err) { // skip autoscaling check if any http errors
       cli.hush(err)
       return

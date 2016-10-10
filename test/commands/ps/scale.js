@@ -12,7 +12,7 @@ describe('ps:scale', () => {
   beforeEach(() => {
     cli.mockConsole()
     api = nock('https://api.heroku.com')
-    metrics = nock('https://api.metrics.herokai.com')
+    metrics = nock('https://api.metrics.heroku.com')
   })
 
   afterEach(() => {

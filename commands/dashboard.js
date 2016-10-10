@@ -119,10 +119,10 @@ function * run (context, heroku) {
     return apps.map((app) => {
       let types = app.formation.map((p) => p.type)
       return {
-        dynoErrors: types.map((type) => heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: {Range: ''}}).catch(() => null)),
-        routerLatency: heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null),
-        routerErrors: heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null),
-        routerStatus: heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null)
+        dynoErrors: types.map((type) => heroku.request({host: 'api.metrics.heroku.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: {Range: ''}}).catch(() => null)),
+        routerLatency: heroku.request({host: 'api.metrics.heroku.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null),
+        routerErrors: heroku.request({host: 'api.metrics.heroku.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null),
+        routerStatus: heroku.request({host: 'api.metrics.heroku.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null)
       }
     })
   }
