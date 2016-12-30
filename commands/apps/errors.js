@@ -40,6 +40,13 @@ function * run (context, heroku) {
       host: 'api.metrics.herokai.com',
       path: `/apps/${context.app}/router-metrics/errors?${DATE}&process_type=web`,
       headers: {Range: ''}
+    }).catch((err) => {
+      if (err.statusCode === 400 && err.body && err.body.message &&
+          err.body.message.startsWith('invalid process_type provided')
+      ) {
+        return {data: {}}
+      }
+      throw err
     }).then((rsp) => {
       Object.keys(rsp.data).forEach((key) => { rsp.data[key] = sum(rsp.data[key]) })
       return rsp.data
