@@ -27,7 +27,7 @@ describe('heroku buildpacks:add', function () {
         .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}])
 
       return buildpacks.run({
-        app: 'example', args: {url: 'heroku/ruby'}
+        app: 'example', args: {url: 'heroku/ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -48,7 +48,7 @@ Run git push heroku master to create a new release using this buildpack.
         .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}])
 
       return buildpacks.run({
-        app: 'example', args: {url: 'urn:buildpack:heroku/ruby'}
+        app: 'example', args: {url: 'urn:buildpack:heroku/ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -65,7 +65,7 @@ Run git push heroku master to create a new release using this buildpack.
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-ruby')
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -85,7 +85,7 @@ Run git push heroku master to create a new release using this buildpack.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -111,7 +111,7 @@ Run git push heroku master to create a new release using these buildpacks.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -127,7 +127,7 @@ Run git push heroku master to create a new release using these buildpacks.
 
     it('# with no buildpacks handles a missing buildpack URL arg', function () {
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {}
+        app: 'example', args: {}, flags: {}
       })).then(function () {
         expect(cli.stdout).to.equal('')
         expect(cli.stderr).to.equal(
@@ -141,7 +141,7 @@ Run git push heroku master to create a new release using these buildpacks.
       stubGet('http://github.com/foobar/foobar')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/foobar/foobar'}
+        app: 'example', args: {url: 'http://github.com/foobar/foobar'}, flags: {}
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n')
       })
@@ -151,7 +151,7 @@ Run git push heroku master to create a new release using these buildpacks.
       stubGet('https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz'}
+        app: 'example', args: {url: 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz'}, flags: {}
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz is already set on your app.\n')
       })
@@ -161,7 +161,7 @@ Run git push heroku master to create a new release using these buildpacks.
       stubGet('urn:buildpack:heroku/ruby')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'heroku/ruby'}
+        app: 'example', args: {url: 'heroku/ruby'}, flags: {}
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    The buildpack heroku/ruby is already set on your app.\n')
       })

@@ -22,7 +22,7 @@ describe('heroku buildpacks:clear', function () {
     let mock = stubPut()
 
     return buildpacks.run({
-      app: 'example'
+      app: 'example', flags: {}
     }).then(function () {
       mock.done()
       expect(cli.stdout).to.equal('Buildpacks cleared. Next release on example will detect buildpack normally.\n')
@@ -37,7 +37,7 @@ describe('heroku buildpacks:clear', function () {
     let mock = stubPut()
 
     return buildpacks.run({
-      app: 'example'
+      app: 'example', flags: {}
     }).then(function () {
       mock.done()
       expect(cli.stdout).to.equal('Buildpacks cleared.\n')
@@ -53,7 +53,7 @@ describe('heroku buildpacks:clear', function () {
     let mock = stubPut()
 
     return buildpacks.run({
-      app: 'example'
+      app: 'example', flags: {}
     }).then(function () {
       mock.done()
       expect(cli.stdout).to.equal('Buildpacks cleared.\n')

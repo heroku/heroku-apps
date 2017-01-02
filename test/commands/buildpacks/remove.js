@@ -198,7 +198,7 @@ Run git push heroku master to create a new release using these buildpacks.
       let mock = stubPut()
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -216,7 +216,7 @@ Run git push heroku master to create a new release using these buildpacks.
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-java')
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -239,7 +239,7 @@ Run git push heroku master to create a new release using this buildpack.
         .reply(200, {})
 
       return buildpacks.run({
-        app: 'example', args: {url: 'heroku/ruby'}
+        app: 'example', args: {url: 'heroku/ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -253,7 +253,7 @@ Run git push heroku master to create a new release using this buildpack.
       stubGet()
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}
+        app: 'example', args: {url: 'http://github.com/bar/bar'}, flags: {}
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n')
       })
@@ -263,7 +263,7 @@ Run git push heroku master to create a new release using this buildpack.
       stubGet('http://github.com/foo/foo')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}
+        app: 'example', args: {url: 'http://github.com/bar/bar'}, flags: {}
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Buildpack not found. Nothing was removed.\n')
       })
@@ -281,7 +281,7 @@ Run git push heroku master to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -306,7 +306,7 @@ Run git push heroku master to create a new release using these buildpacks.
 
   it('# returns an error message neither i or url are specified', function () {
     return assertExit(1, buildpacks.run({
-      app: 'example'
+      app: 'example', flags: {}
     })).then(function () {
       expect(unwrap(cli.stderr)).to.equal(
         ` ▸    Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.

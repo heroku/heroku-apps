@@ -24,7 +24,7 @@ describe('heroku buildpacks:set', function () {
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -39,7 +39,7 @@ Run git push heroku master to create a new release using this buildpack.
       stubGet('http://github.com/foobar/foobar')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/foobar/foobar'}
+        app: 'example', args: {url: 'http://github.com/foobar/foobar'}, flags: {}
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n')
       })
@@ -59,7 +59,7 @@ Run git push heroku master to create a new release using this buildpack.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}
+        app: 'example', args: {url: 'http://github.com/bar/bar'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -261,7 +261,7 @@ Run git push heroku master to create a new release using these buildpacks.
 
   it('# handles a missing buildpack URL arg', function () {
     return assertExit(1, buildpacks.run({
-      app: 'example', args: {}
+      app: 'example', args: {}, flags: {}
     })).then(function () {
       expect(cli.stderr).to.equal(
         ` ▸    Usage: heroku buildpacks:set BUILDPACK_URL.
