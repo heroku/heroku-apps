@@ -1,6 +1,5 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
 const {Command, api, app} = require('heroku-command')
 
 class Config extends Command {
@@ -15,10 +14,10 @@ class Config extends Command {
         this.log(`${k}=${shellescape([v])}`)
       })
     } else if (this.flags.json) {
-      cli.styledJSON(configVars)
+      this.styledJSON(configVars)
     } else {
-      cli.styledHeader(`${this.app} Config Vars`)
-      cli.styledObject(mapKeys(configVars, (_, k) => cli.color.configVar(k)))
+      this.styledHeader(`${this.app} Config Vars`)
+      this.styledObject(mapKeys(configVars, (_, k) => this.color.configVar(k)))
     }
   }
 }
