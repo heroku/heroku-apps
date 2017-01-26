@@ -11,7 +11,7 @@ class Config extends Command {
 
     let configVars = await this.api.get(`/apps/${this.app}/config-vars`)
     if (this.flags.shell) {
-      forEach(configVars, function (v, k) {
+      forEach(configVars, (v, k) => {
         this.log(`${k}=${shellescape([v])}`)
       })
     } else if (this.flags.json) {
