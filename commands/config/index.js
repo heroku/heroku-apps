@@ -1,6 +1,6 @@
 'use strict'
 
-const {Command, api, app} = require('heroku-command')
+const {Command, mixins} = require('heroku-command')
 
 class Config extends Command {
   async run () {
@@ -24,10 +24,12 @@ class Config extends Command {
 
 Config.topic = 'config'
 Config.description = 'display the config vars for an app'
-Config.mixins = [api(), app()]
 Config.flags = [
   {name: 'shell', char: 's', description: 'output config vars in shell format'},
   {name: 'json', description: 'output config vars in json format'}
 ]
+
+mixins.api(Config)
+mixins.app(Config)
 
 module.exports = Config
