@@ -2,7 +2,7 @@
 
 const {Command, mixins} = require('heroku-command')
 
-class Config extends Command {
+class Config extends mixins.mix(Command).with(mixins.api(), mixins.app()) {
   async run () {
     const shellescape = require('shell-escape')
     const forEach = require('lodash.foreach')
@@ -28,8 +28,5 @@ Config.flags = [
   {name: 'shell', char: 's', description: 'output config vars in shell format'},
   {name: 'json', description: 'output config vars in json format'}
 ]
-
-mixins.api(Config)
-mixins.app(Config)
 
 module.exports = Config
