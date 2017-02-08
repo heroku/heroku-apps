@@ -1,6 +1,6 @@
 'use strict'
 
-const {Command, mixins} = require('heroku-command')
+const {Command, mixins} = require('heroku-cli-command')
 
 class Config extends mixins.mix(Command).with(mixins.api(), mixins.app()) {
   async run () {

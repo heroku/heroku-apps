@@ -5,7 +5,7 @@ let time = require('../../lib/time')
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
-const {Command, mixins} = require('heroku-command')
+const {Command, mixins} = require('heroku-cli-command')
 
 class PS extends Command {
   async run () {

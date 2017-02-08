@@ -1,6 +1,6 @@
 'use strict'
 
-const {Command, mixins} = require('heroku-command')
+const {Command, mixins} = require('heroku-cli-command')
 
 class Scale extends Command {
   async run () {
