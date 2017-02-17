@@ -7,7 +7,7 @@ let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
 const {Command, mixins} = require('heroku-cli-command')
 
-class PS extends Command {
+class PS extends mixins.mix(Command).with(mixins.app(), mixins.api()) {
   async run () {
     const types = this.args
     const {json, extended} = this.flags
@@ -161,8 +161,5 @@ Examples:
  $ heroku ps run # specifying types
  === run: one-off dyno
  run.1: up for 5m: bash`
-
-mixins.api(PS)
-mixins.app(PS)
 
 module.exports = PS
