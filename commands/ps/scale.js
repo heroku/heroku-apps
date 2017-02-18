@@ -2,7 +2,7 @@
 
 const {Command, mixins} = require('heroku-cli-command')
 
-class Scale extends Command {
+class Scale extends mixins.mix(Command).with(mixins.app(), mixins.heroku()) {
   async run () {
     const compact = require('lodash.compact')
     let app = this.app
@@ -59,6 +59,4 @@ Examples:
   web=3:Standard-2X worker=1:Standard-1X
 `
 
-mixins.api(Scale)
-mixins.app(Scale)
 module.exports = Scale

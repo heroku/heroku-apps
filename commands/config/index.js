@@ -2,13 +2,13 @@
 
 const {Command, mixins} = require('heroku-cli-command')
 
-class Config extends mixins.mix(Command).with(mixins.api(), mixins.app()) {
+class Config extends mixins.mix(Command).with(mixins.heroku(), mixins.app()) {
   async run () {
     const shellescape = require('shell-escape')
     const forEach = require('lodash.foreach')
     const mapKeys = require('lodash.mapkeys')
 
-    let configVars = await this.api.get(`/apps/${this.app}/config-vars`)
+    let configVars = await this.heroku.get(`/apps/${this.app}/config-vars`)
     if (this.flags.shell) {
       forEach(configVars, (v, k) => {
         this.log(`${k}=${shellescape([v])}`)
