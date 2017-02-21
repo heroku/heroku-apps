@@ -38,7 +38,19 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
 
   let displayFormation = co.wrap(function * () {
     let formation = yield heroku.get(`/apps/${app}/formation`)
+    let shielded = yield heroku.get(`/apps/${app}`)
+
+    shielded = shielded.space && shielded.space.shield
     formation = sortBy(formation, 'type')
+
+    formation.forEach((d) => {
+      if (shielded && d.size === 'Private-M') {
+        d.size = 'Shield-M'
+      } else if (shielded && d.size === 'Private-L') {
+        d.size = 'Shield-L'
+      }
+    })
+
     formation = formation.map((d) => ({
       type: cli.color.green(d.type),
       size: cli.color.cyan(d.size),
