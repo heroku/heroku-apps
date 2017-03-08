@@ -2,7 +2,13 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  yield cli.login({save: true, sso: context.flags.sso})
+  try {
+    const {token} = yield cli.login({save: true, sso: context.flags.sso})
+    context.auth.password = token
+  } catch (err) {
+    if (err.statusCode === 401) return yield run(context, heroku)
+    throw err
+  }
   let account = yield heroku.get('/account')
   cli.log(`Logged in as ${account.email}`)
 }
