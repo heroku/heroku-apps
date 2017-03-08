@@ -1,11 +1,9 @@
-'use strict'
-
-let cli = require('heroku-cli-util')
-let co = require('co')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function notloggedin () {
   console.error('not logged in')
-  process.exit(100)
+  cli.exit(100)
 }
 
 function * run (context, heroku) {
@@ -20,9 +18,12 @@ function * run (context, heroku) {
   }
 }
 
-module.exports = {
-  topic: 'auth',
-  command: 'whoami',
+const cmd = {
   description: 'display the current logged in user',
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({topic: 'auth', command: 'whoami'}, cmd),
+  Object.assign({topic: 'whoami'}, cmd)
+]
