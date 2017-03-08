@@ -11,8 +11,13 @@ function notloggedin () {
 function * run (context, heroku) {
   if (process.env.HEROKU_API_KEY) cli.warn('HEROKU_API_KEY is set')
   if (!context.auth.password) notloggedin()
-  let account = yield heroku.get('/account')
-  cli.log(account.email)
+  try {
+    let account = yield heroku.get('/account')
+    cli.log(account.email)
+  } catch (err) {
+    if (err.statusCode === 401) notloggedin()
+    throw err
+  }
 }
 
 module.exports = {
