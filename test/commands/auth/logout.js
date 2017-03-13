@@ -3,8 +3,9 @@
 
 const cli = require('heroku-cli-util')
 const proxyquire = require('proxyquire')
+const td = require('testdouble')
 
-let netrcMock = {}
+let netrcMock = td.constructor(require('netrc-parser'))
 // get command from index.js
 const cmd = proxyquire('../../../commands/auth/logout', {'netrc-parser': netrcMock})[0]
 const expect = require('unexpected')
@@ -13,18 +14,17 @@ describe('auth:logout', () => {
   beforeEach(() => cli.mockConsole())
 
   it('logs out the user', () => {
-    let saved = false
-    netrcMock.save = () => { saved = true }
-    netrcMock.machines = {
+    let machines = {
       'api.heroku.com': { login: 'u', password: 'p' },
       'git.heroku.com': { login: 'u', password: 'p' }
     }
+    netrcMock.prototype.machines = machines
     return cmd.run({})
       .then(() => {
-        expect(netrcMock.machines, 'to equal', {})
+        td.verify(netrcMock.prototype.save())
+        expect(machines, 'to equal', {})
         expect(cli.stderr, 'to be empty')
         expect(cli.stdout, 'to equal', 'Local credentials cleared\n')
-        expect(saved, 'to be true')
       })
   })
 })

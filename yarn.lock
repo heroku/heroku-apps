@@ -208,7 +208,7 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-runtime@^6.22.0, babel-runtime@^6.23.0:
+babel-runtime@^6.22.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
@@ -2000,13 +2000,6 @@ mz@2.6.0:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
-
-netrc-parser@1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-1.0.6.tgz#97650a0df48ea1c9fd7898a8be899da10e084adb"
-  dependencies:
-    babel-runtime "^6.23.0"
-    lex "^1.7.9"
 
 netrc-parser@2.0.1:
   version "2.0.1"

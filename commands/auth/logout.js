@@ -2,7 +2,8 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  const netrc = require('netrc-parser')
+  const Netrc = require('netrc-parser')
+  const netrc = new Netrc()
   delete netrc.machines['api.heroku.com']
   delete netrc.machines['git.heroku.com']
   netrc.save()
