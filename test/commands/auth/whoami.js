@@ -1,11 +1,15 @@
 'use strict'
-/* globals commands, describe beforeEach afterEach it */
 
-const cli = require('heroku-cli-util')
 const nock = require('nock')
+const td = require('testdouble')
+const proxyquire = require('proxyquire')
+
+const netrc = td.constructor(require('netrc-parser'))
+netrc['@global'] = true
+const cli = proxyquire('heroku-cli-util', {'netrc-parser': netrc})
 
 // get command from index.js
-const cmd = commands.find(c => c.topic === 'auth' && c.command === 'whoami')
+const cmd = proxyquire('../../../commands/auth/whoami', {'heroku-cli-util': cli})[0]
 const expect = require('unexpected')
 
 describe('auth:whoami', () => {
@@ -13,11 +17,12 @@ describe('auth:whoami', () => {
   afterEach(() => nock.cleanAll())
 
   it('shows logged in user', () => {
-    let api = nock('https://api.heroku.com:443')
-      .get('/account')
-      .reply(200, {email: 'foo@bar.com'})
+    let api = nock('https://api.heroku.com')
+    .get('/account')
+    .reply(200, {email: 'foo@bar.com'})
 
-    return cmd.run({auth: {password: 'foobar'}})
+    netrc.prototype.machines = {'api.heroku.com': {password: 'myapikye'}}
+    return cmd.run({})
       .then(() => expect(cli.stdout, 'to equal', 'foo@bar.com\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
