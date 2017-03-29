@@ -20,8 +20,16 @@ describe('auth:2fa:disable', () => {
       .reply(200, {two_factor_authentication: false})
 
     return cmd.run({})
-      .then(() => expect(cli.stdout, 'to equal', 'Two-factor authentication has been disabled\n'))
+      .then(() => expect(cli.stdout, 'to equal', 'Two-factor authentication is disabled\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
+  })
+
+  it('is aliased by 2fa:disable', () => {
+    const cmd = commands.find(c => c.topic === '2fa' && c.command === 'disable')
+    expect(cmd, 'to have own properties', {
+      topic: '2fa',
+      command: 'disable'
+    })
   })
 })

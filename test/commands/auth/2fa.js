@@ -33,4 +33,12 @@ describe('auth:2fa', () => {
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
+
+  it('is aliased by 2fa', () => {
+    const cmd = commands.find(c => c.topic === '2fa' && !c.command)
+    expect(cmd, 'to have own properties', {
+      topic: '2fa'
+    })
+    expect(cmd, 'not to have own properties', ['command'])
+  })
 })

@@ -21,11 +21,19 @@ describe('auth:2fa:generate', () => {
       }
     })
       .post('/account/recovery-codes')
-      .reply(200, ['[\'19c6255cfdc6f2c0\',\'1fb5f44ba434179d\']'])
+      .reply(200, ['19c6255cfdc6f2c0', '1fb5f44ba434179d'])
 
     return cmd.run({})
-      .then(() => expect(cli.stdout, 'to equal', 'Recovery codes:\n[\'19c6255cfdc6f2c0\',\'1fb5f44ba434179d\']\n'))
+      .then(() => expect(cli.stdout, 'to equal', 'Recovery codes:\n19c6255cfdc6f2c0\n1fb5f44ba434179d\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
+  })
+
+  it('is aliased by 2fa:generate', () => {
+    const cmd = commands.find(c => c.topic === '2fa' && c.command === 'generate')
+    expect(cmd, 'to have own properties', {
+      topic: '2fa',
+      command: 'generate'
+    })
   })
 })

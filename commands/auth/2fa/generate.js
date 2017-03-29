@@ -6,15 +6,18 @@ function * run (context, heroku) {
   let headers = {'Heroku-Password': password}
   let codes = yield heroku.post('/account/recovery-codes', {headers: headers})
   cli.log('Recovery codes:')
-  cli.log(codes)
+  for (var i in codes) cli.log(codes[i])
 }
 
 const cmd = {
   description: 'generates and replaces recovery codes',
+  needsAuth: true,
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
   Object.assign({topic: 'auth', command: '2fa:generate'}, cmd),
-  Object.assign({topic: '2fa', command: 'generate'}, cmd)
+  Object.assign({topic: 'auth', command: 'twofactor:generate'}, cmd),
+  Object.assign({topic: '2fa', command: 'generate'}, cmd),
+  Object.assign({topic: 'twofactor', command: 'generate'}, cmd)
 ]

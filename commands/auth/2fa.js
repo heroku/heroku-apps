@@ -12,10 +12,13 @@ function * run (context, heroku) {
 
 const cmd = {
   description: 'check 2fa status',
+  needsAuth: true,
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
   Object.assign({topic: 'auth', command: '2fa'}, cmd),
-  Object.assign({topic: '2fa'}, cmd)
+  Object.assign({topic: '2fa'}, cmd),
+  Object.assign({topic: 'auth', command: 'twofactor'}, cmd),
+  Object.assign({topic: 'twofactor'}, cmd)
 ]
