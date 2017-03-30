@@ -34,7 +34,7 @@ exports.commands = flatten([
   require('./commands/apps/stacks/set'),
   require('./commands/auth/2fa'),
   require('./commands/auth/2fa/disable'),
-  require('./commands/auth/2fa/generate'),
+  require('./commands/auth/2fa/generate_recovery_codes'),
   require('./commands/auth/login'),
   require('./commands/auth/logout'),
   require('./commands/auth/token'),
