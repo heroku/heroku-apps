@@ -1,5 +1,5 @@
 'use strict'
-/* globals commands, describe beforeEach afterEach it */
+/* globals commands describe beforeEach afterEach it */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')

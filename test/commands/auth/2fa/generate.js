@@ -5,10 +5,10 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 
 // get command from index.js
-const cmd = commands.find(c => c.topic === 'auth' && c.command === '2fa:generate')
+const cmd = commands.find(c => c.topic === 'auth' && c.command === '2fa:generate-recovery-codes')
 const expect = require('unexpected')
 
-describe('auth:2fa:generate', () => {
+describe('auth:2fa:generate-recovery-codes', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
@@ -29,11 +29,11 @@ describe('auth:2fa:generate', () => {
       .then(() => api.done())
   })
 
-  it('is aliased by 2fa:generate', () => {
-    const cmd = commands.find(c => c.topic === '2fa' && c.command === 'generate')
+  it('is aliased by 2fa:generate-recovery-codes', () => {
+    const cmd = commands.find(c => c.topic === '2fa' && c.command === 'generate-recovery-codes')
     expect(cmd, 'to have own properties', {
       topic: '2fa',
-      command: 'generate'
+      command: 'generate-recovery-codes'
     })
   })
 })

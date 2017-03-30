@@ -14,7 +14,6 @@ const cmd = {
 
 module.exports = [
   Object.assign({topic: 'auth', command: '2fa:disable'}, cmd),
-  Object.assign({topic: 'auth', command: 'twofactor:disable'}, cmd),
   Object.assign({topic: '2fa', command: 'disable'}, cmd),
   Object.assign({topic: 'twofactor', command: 'disable'}, cmd)
 ]

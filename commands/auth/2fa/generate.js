@@ -16,8 +16,7 @@ const cmd = {
 }
 
 module.exports = [
-  Object.assign({topic: 'auth', command: '2fa:generate'}, cmd),
-  Object.assign({topic: 'auth', command: 'twofactor:generate'}, cmd),
-  Object.assign({topic: '2fa', command: 'generate'}, cmd),
-  Object.assign({topic: 'twofactor', command: 'generate'}, cmd)
+  Object.assign({topic: 'auth', command: '2fa:generate-recovery-codes'}, cmd),
+  Object.assign({topic: '2fa', command: 'generate-recovery-codes'}, cmd),
+  Object.assign({topic: 'twofactor', command: 'generate-recovery-codes'}, cmd)
 ]
