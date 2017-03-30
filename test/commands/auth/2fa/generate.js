@@ -1,18 +1,18 @@
 'use strict'
-/* globals commands, describe beforeEach afterEach it */
+/* globals commands describe beforeEach afterEach it */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 
 // get command from index.js
-const cmd = commands.find(c => c.topic === 'auth' && c.command === '2fa:generate-recovery-codes')
+const cmd = commands.find(c => c.topic === 'auth' && c.command === '2fa:generate')
 const expect = require('unexpected')
 
-describe('auth:2fa:generate-recovery-codes', () => {
+describe('auth:2fa:generate', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('generate replacement 2fa codes', () => {
+  it('generates replacement 2fa codes', () => {
     cli.prompt = function () { return Promise.resolve('foobar') }
 
     let api = nock('https://api.heroku.com', {
