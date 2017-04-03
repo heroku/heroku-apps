@@ -42,10 +42,11 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
     const shielded = appProps.space && appProps.space.shield
 
     formation = sortBy(formation, 'type')
-
-    formation.forEach((d) => {
-      if (shielded) { d.size = d.size.replace('Private-', 'Shield-') }
-    })
+    if (shielded) {
+      formation.forEach((d) => {
+        d.size = d.size.replace('Private-', 'Shield-')
+      })
+    }
 
     formation = formation.map((d) => ({
       type: cli.color.green(d.type),

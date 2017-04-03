@@ -18,6 +18,7 @@ function * run (context, heroku) {
       let change = arg.match(/^([a-zA-Z0-9_]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
       let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]
+      change[3] = change[3].replace('Shield-', 'Private-')
       return {type: change[1], quantity, size: change[3]}
     }))
   }
@@ -25,6 +26,15 @@ function * run (context, heroku) {
   let changes = parse(context.args)
   if (changes.length === 0) {
     let formation = yield heroku.get(`/apps/${app}/formation`)
+
+    const appProps = yield heroku.get(`/apps/${app}`)
+    const shielded = appProps.space && appProps.space.shield
+    if (shielded) {
+      formation.forEach((d) => {
+        d.size = d.size.replace('Private-', 'Shield-')
+      })
+    }
+
     if (formation.length === 0) throw emptyFormationErr(app)
     cli.log(formation.map((d) => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
