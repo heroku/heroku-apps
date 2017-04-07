@@ -2,7 +2,6 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let request = require('request')
 
 function * run (context, heroku) {
   function getRelease (id) {
@@ -33,7 +32,7 @@ function * run (context, heroku) {
   }
 
   yield new Promise(function (resolve, reject) {
-    request(streamUrl)
+    cli.got.stream(streamUrl)
       .on('error', reject)
       .on('end', resolve)
       .on('data', function (c) {
