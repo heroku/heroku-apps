@@ -18,7 +18,7 @@ function * run (context, heroku) {
       let change = arg.match(/^([a-zA-Z0-9_]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
       let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]
-      change[3] = change[3].replace('Shield-', 'Private-')
+      if (change[3]) change[3] = change[3].replace('Shield-', 'Private-')
       return {type: change[1], quantity, size: change[3]}
     }))
   }
@@ -40,6 +40,13 @@ function * run (context, heroku) {
   } else {
     yield cli.action('Scaling dynos', {success: false}, co(function * () {
       let formation = yield heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
+      const appProps = yield heroku.get(`/apps/${app}`)
+      const shielded = appProps.space && appProps.space.shield
+      if (shielded) {
+        formation.forEach((d) => {
+          d.size = d.size.replace('Private-', 'Shield-')
+        })
+      }
       let output = formation.filter((f) => changes.find((c) => c.type === f.type))
         .map((d) => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
       cli.action.done(`done, now running ${output.join(', ')}`)
