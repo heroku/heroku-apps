@@ -26,7 +26,7 @@ function * run (context, heroku) {
   }
   let streamUrl = release.output_stream_url
 
-  if (streamUrl === undefined || streamUrl === null) {
+  if (!streamUrl) {
     cli.warn(`Release v${release.version} has no release output available.`)
     return
   }
