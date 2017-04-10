@@ -4,10 +4,6 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  function getRelease (id) {
-    return heroku.get(`/apps/${context.app}/releases/${id}`)
-  }
-
   function getLatestRelease () {
     return heroku.request({
       path: `/apps/${context.app}/releases`,
@@ -20,7 +16,7 @@ function * run (context, heroku) {
   if (context.args.release) {
     let id = context.args.release.toLowerCase()
     id = id.startsWith('v') ? id.slice(1) : id
-    release = yield getRelease(id)
+    release = yield heroku.get(`/apps/${context.app}/releases/${id}`)
   } else {
     release = yield getLatestRelease()
   }
