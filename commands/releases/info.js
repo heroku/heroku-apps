@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+let releases = require('../../lib/releases')
 
 function * run (context, heroku) {
   const shellescape = require('shell-escape')
@@ -10,14 +11,8 @@ function * run (context, heroku) {
   let id = (context.args.release || 'current').toLowerCase()
   id = id.startsWith('v') ? id.slice(1) : id
   if (id === 'current') {
-    let releases = yield heroku.request({
-      path: `/apps/${context.app}/releases`,
-      partial: true,
-      headers: {
-        Range: 'version ..; max=1, order=desc'
-      }
-    })
-    id = releases[0].version
+    let release = yield releases.FindRelease(heroku, context.app, (releases) => releases[0])
+    id = release.version
   }
 
   let data = yield {
