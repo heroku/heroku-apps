@@ -21,12 +21,11 @@ function * run (context, heroku) {
   }
 
   yield new Promise(function (resolve, reject) {
-    cli.got.stream(streamUrl)
-      .on('error', reject)
-      .on('end', resolve)
-      .on('data', function (c) {
-        cli.log(c.toString('utf8'))
-      })
+    let stream = cli.got.stream(streamUrl)
+    stream.on('error', reject)
+    stream.on('end', resolve)
+    let piped = stream.pipe(process.stdout)
+    piped.on('error', reject)
   })
 }
 
