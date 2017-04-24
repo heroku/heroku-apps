@@ -5,14 +5,8 @@ let co = require('co')
 let releases = require('../../lib/releases')
 
 function * run (context, heroku) {
-  let release
-  if (context.args.release) {
-    let id = context.args.release.toLowerCase()
-    id = id.startsWith('v') ? id.slice(1) : id
-    release = yield heroku.get(`/apps/${context.app}/releases/${id}`)
-  } else {
-    release = yield releases.FindRelease(heroku, context.app, (releases) => releases[0])
-  }
+  let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
+
   let streamUrl = release.output_stream_url
 
   if (!streamUrl) {
@@ -21,12 +15,11 @@ function * run (context, heroku) {
   }
 
   yield new Promise(function (resolve, reject) {
-    cli.got.stream(streamUrl)
-      .on('error', reject)
-      .on('end', resolve)
-      .on('data', function (c) {
-        cli.log(c.toString('utf8'))
-      })
+    let stream = cli.got.stream(streamUrl)
+    stream.on('error', reject)
+    stream.on('end', resolve)
+    let piped = stream.pipe(process.stdout)
+    piped.on('error', reject)
   })
 }
 
