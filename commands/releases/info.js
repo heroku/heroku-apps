@@ -11,12 +11,7 @@ function * run (context, heroku) {
 
   let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
 
-  let config = yield heroku.request({
-    path: `/apps/${context.app}/releases/${release.version}/config-vars`,
-    headers: {
-      Accept: 'application/vnd.heroku+json; version=3'
-    }
-  })
+  let config = yield heroku.get(`/apps/${context.app}/releases/${release.version}/config-vars`)
 
   if (context.flags.json) {
     cli.styledJSON(release)
