@@ -3,6 +3,7 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let releases = require('../../lib/releases')
+let output = require('../../lib/output')
 
 function * run (context, heroku) {
   let release
@@ -25,13 +26,7 @@ To undo, run: ${cli.color.cmd('heroku rollback v' + (latest.version - 1))}`)
 
   if (latest.output_stream_url) {
     cli.log('Running release command...')
-    yield new Promise(function (resolve, reject) {
-      let stream = cli.got.stream(release.output_stream_url)
-      stream.on('error', reject)
-      stream.on('end', resolve)
-      let piped = stream.pipe(process.stdout)
-      piped.on('error', reject)
-    })
+    yield output.Stream(release.output_stream_url)
   }
 }
 
