@@ -94,7 +94,7 @@ Example:
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default org is set'},
-    flags.team({name: 'org', hasValue: true, hidden: true}),
+    flags.team({name: 'org', char: 'o', hasValue: true, hidden: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
