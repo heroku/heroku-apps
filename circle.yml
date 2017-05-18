@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: dickeyxxx/cli-engine-docker:v1.0.0
+      - image: dickeyxxx/cli-engine-docker:v1.0.2
     working_directory: ~/cli
     steps:
       - checkout
@@ -14,8 +14,8 @@ jobs:
             - cli-master
       - run: |
           yarn
-          ./node_modules/.bin/nyc mocha test
-          ./node_modules/.bin/standard
+          nyc mocha test
+          standard
           nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
       - save_cache:
           key: cli-{{ .Branch }}-{{checksum "package.json"}}
