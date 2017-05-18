@@ -166,6 +166,7 @@ module.exports = {
   hidden: true,
   needsAuth: true,
   flags: [
+    flags.team({name: 'org', hasValue: true, hidden: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
