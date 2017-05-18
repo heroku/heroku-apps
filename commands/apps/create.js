@@ -2,6 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+const {flags} = require('cli-engine-heroku')
 
 function * run (context, heroku) {
   let git = require('../../lib/git')(context)
@@ -90,7 +91,6 @@ let cmd = {
  $ heroku apps:create --region eu
  `,
   needsAuth: true,
-  wantsOrg: true,
   args: [{name: 'app', optional: true}],
   flags: [
     {name: 'app', char: 'a', hasValue: true, hidden: true},
@@ -103,7 +103,8 @@ let cmd = {
     {name: 'region', hasValue: true, description: 'specify region for the app to run in'},
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
-    {name: 'locked', hidden: true}
+    {name: 'locked', hidden: true},
+    flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
 }

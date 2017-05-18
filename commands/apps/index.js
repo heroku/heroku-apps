@@ -2,6 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const {flags} = require('cli-engine-heroku')
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
@@ -88,12 +89,12 @@ Example:
  === Collaborated Apps
  theirapp   other@owner.name`,
   needsAuth: true,
-  wantsOrg: true,
   flags: [
     {name: 'all', char: 'A', description: 'include apps in all organizations'},
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
-    {name: 'personal', char: 'p', description: 'list apps in personal account when a default org is set'}
+    {name: 'personal', char: 'p', description: 'list apps in personal account when a default org is set'},
+    flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
 }
