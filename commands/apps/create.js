@@ -11,7 +11,7 @@ function * run (context, heroku) {
   function createApp () {
     let params = {
       name,
-      organization: context.org,
+      organization: context.org || context.flags.team,
       region: context.flags.region,
       space: context.flags.space,
       stack: context.flags.stack,
@@ -21,7 +21,7 @@ function * run (context, heroku) {
 
     return heroku.request({
       method: 'POST',
-      path: (params.space || context.org) ? '/organizations/apps' : '/apps',
+      path: (params.space || params.organization) ? '/organizations/apps' : '/apps',
       body: params
     }).then(app => {
       let status = name ? 'done' : `done, ${cli.color.app(app.name)}`
@@ -104,7 +104,7 @@ let cmd = {
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
     {name: 'locked', hidden: true},
-    flags.team({name: 'org', char: 'o', hasValue: true, hidden: true}),
+    flags.org({name: 'org', hasValue: true, hidden: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
