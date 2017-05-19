@@ -36,7 +36,7 @@ function * run (context, heroku) {
       cli.styledHeader(`Apps in space ${cli.color.green(space)}`)
       listApps(apps)
     } else if (org) {
-      cli.styledHeader(`Apps in teams ${cli.color.magenta(org)}`)
+      cli.styledHeader(`Apps in team ${cli.color.magenta(org)}`)
       listApps(apps)
     } else {
       apps = partition(apps, (app) => app.owner.email === user.email)
@@ -95,7 +95,7 @@ Example:
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
-    flags.org({name: 'org', hasValue: true, hidden: true}),
+    flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))

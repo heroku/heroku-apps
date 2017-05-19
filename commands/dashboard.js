@@ -2,7 +2,6 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const {flags} = require('cli-engine-heroku')
 
 let empty = (o) => Object.keys(o).length === 0
 
