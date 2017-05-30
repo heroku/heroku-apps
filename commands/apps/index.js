@@ -8,7 +8,7 @@ function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
   const partition = require('lodash.partition')
 
-  let team = context.team || context.org
+  let team = context.org || context.team || context.flags.team
   let org = (!context.flags.personal && team) ? team : null
   let space = context.flags.space
   if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name
