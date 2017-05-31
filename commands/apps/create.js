@@ -4,7 +4,19 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 const {flags} = require('cli-engine-heroku')
 
+let orgFlags = [
+  flags.org({name: 'org', hasValue: true}),
+  flags.team({name: 'team', hasValue: true})
+]
+
+function organizationMunge (context) {
+  context.org = orgFlags[0].parse(context.flags.org, context)
+  context.team = orgFlags[1].parse(context.flags.team, context)
+}
+
 function * run (context, heroku) {
+  organizationMunge(context)
+
   let git = require('../../lib/git')(context)
   let name = context.flags.app || context.args.app || process.env.HEROKU_APP
 
@@ -103,10 +115,8 @@ let cmd = {
     {name: 'region', hasValue: true, description: 'specify region for the app to run in'},
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
-    {name: 'locked', hidden: true},
-    flags.org({name: 'org', hasValue: true}),
-    flags.team({name: 'team', hasValue: true})
-  ],
+    {name: 'locked', hidden: true}
+  ].concat(orgFlags),
   run: cli.command(co.wrap(run))
 }
 
