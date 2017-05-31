@@ -92,6 +92,7 @@ let cmd = {
  `,
   needsAuth: true,
   args: [{name: 'app', optional: true}],
+  wantsOrgs: true,
   flags: [
     {name: 'app', char: 'a', hasValue: true, hidden: true},
     {name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install'},
@@ -104,7 +105,6 @@ let cmd = {
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
     {name: 'locked', hidden: true},
-    flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
