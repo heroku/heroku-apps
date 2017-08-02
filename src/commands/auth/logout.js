@@ -11,7 +11,7 @@ function * run (context, heroku) {
 }
 
 const cmd = {
-  description: 'display the current logged in user',
+  description: 'Logout of you current CLI session',
   run: cli.command(co.wrap(run))
 }
 
