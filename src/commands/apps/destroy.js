@@ -39,7 +39,12 @@ let cmd = {
   flags: [
     {name: 'confirm', char: 'c', hasValue: true}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku apps:destroy --app murmuring-headland-14719
+ ▸    WARNING: This will delete ⬢ murmuring-headland-14719 including all add-ons.
+ ▸    To proceed, type murmuring-headland-14719 or re-run this command with --confirm murmuring-headland-14719`
 }
 
 module.exports = [

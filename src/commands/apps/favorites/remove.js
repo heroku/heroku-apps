@@ -24,5 +24,9 @@ module.exports = {
   description: 'unfavorites an app',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku apps:favorites:remove --app murmuring-headland-14719
+		Removing ⬢ murmuring-headland-14719 from favorites... done`
 }
