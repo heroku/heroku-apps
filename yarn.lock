@@ -751,6 +751,10 @@ cli-engine-heroku@^1.1.2:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
+cli-ux@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-0.0.0.tgz#15be585d7d5fffb36560abc872e77dc4c19a777b"
+
 cli-width@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.1.0.tgz#b234ca209b29ef66fc518d9b98d5847b00edf00a"

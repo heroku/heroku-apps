@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const http = require('http-call').default
+const path = require('path')
+const pjson = require(path.join(__dirname, '../package.json'))
+const cli = require('cli-ux')
+
+cli.action('Invalidating plugin cache on cli-npm.heroku.com', async () => {
+  await http.post(`https://heroku-npm.herokuapp.com/-/invalidat/${pjson.name}`)
+})
