@@ -7,6 +7,10 @@ export default class Whoami extends Command {
   static command = 'whoami'
   static description = 'display the current logged in user'
   static aliases = ['whoami']
+  static help = `Example:
+
+    $ heroku auth:whoami
+    user@example.com`
 
   async run () {
     if (process.env.HEROKU_API_KEY) this.out.warn('HEROKU_API_KEY is set')

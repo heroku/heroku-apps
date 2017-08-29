@@ -11,5 +11,9 @@ module.exports = {
   topic: 'auth',
   command: 'token',
   description: 'display the current auth token',
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku auth:token
+    6aa4f8f74be03--331cfe6-616d3abd-8bdb`
 }

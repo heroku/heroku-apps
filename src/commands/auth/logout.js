@@ -7,8 +7,12 @@ function * run (context, heroku) {
 }
 
 const cmd = {
-  description: 'clears local login credentials',
-  run: cli.command(co.wrap(run))
+  description: 'clear credentials for the current logged in user',
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku auth:logout
+    Local credentials cleared`
 }
 
 module.exports = [
