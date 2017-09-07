@@ -23,5 +23,9 @@ module.exports = {
   description: 'remove all domains from an app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku domains:clear --app murmuring-headland-14719
+    Removing all domains from ⬢ murmuring-headland-14719... done`
 }

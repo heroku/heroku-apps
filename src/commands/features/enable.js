@@ -26,5 +26,9 @@ module.exports = {
   args: [{name: 'feature'}],
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku features:enable spaces-dns-discovery --app murmuring-headland-14719
+    Enabling spaces-dns-discovery for ⬢ murmuring-headland-14719... done`
 }

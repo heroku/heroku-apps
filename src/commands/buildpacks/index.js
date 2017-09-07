@@ -23,7 +23,9 @@ module.exports = {
   description: 'display the buildpack_url(s) for an app',
   help: `Examples:
 
-    $ heroku buildpacks
+    $ heroku buildpacks --app murmuring-headland-14719
+    === murmuring-headland-14719 Buildpack URL
+    heroku/nodejs
 `,
   needsApp: true,
   needsAuth: true,

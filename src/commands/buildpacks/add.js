@@ -37,7 +37,10 @@ module.exports = {
   description: 'add new app buildpack, inserting into list of buildpacks if necessary',
   help: `Example:
 
-    $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby`,
+    $ heroku buildpacks:add heroku/ruby --app murmuring-headland-14719
+    Buildpack added. Next release on murmuring-headland-14719 will use:
+    1. heroku/nodejs
+    2. heroku/ruby`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

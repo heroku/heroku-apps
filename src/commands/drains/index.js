@@ -44,5 +44,10 @@ module.exports = {
     {name: 'json', description: 'output in json format'},
     {name: 'extended', char: 'x', hidden: true}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku drains --app murmuring-headland-14719
+    === Drains
+    https://my.servelog.backup (d.299a8b-9273f4da34b3-a30bed6-e289f-f8)`
 }

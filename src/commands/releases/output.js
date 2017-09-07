@@ -32,5 +32,8 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   args: [{name: 'release', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run)),
+  help: `Example:
+
+    $ heroku releases:output --app murmuring-headland-14719`
 }

@@ -37,8 +37,9 @@ module.exports = {
   description: 'set new app buildpack, overwriting into list of buildpacks if necessary',
   help: `Example:
 
-    $ heroku buildpacks:set -i 1 heroku/ruby
-`,
+    $ heroku buildpacks:set heroku/nodejs --app murmuring-headland-14719
+    Buildpack set. Next release on murmuring-headland-14719 will use heroku/nodejs.
+    Run git push heroku master to create a new release using this buildpack.`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

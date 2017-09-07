@@ -30,5 +30,8 @@ module.exports = {
     {name: 'shell', char: 's', description: 'output config vars in shell format'},
     {name: 'json', description: 'output config vars in json format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku config --app murmuring-headland-14719`
 }

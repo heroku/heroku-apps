@@ -38,5 +38,9 @@ module.exports = {
   args: [{name: 'feature'}],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku labs:enable app-alerting --app murmuring-headland-14719
+    Enabling app-alerting for murmuring-headland-14719... done`
 }

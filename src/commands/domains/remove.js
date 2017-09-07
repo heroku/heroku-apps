@@ -18,5 +18,9 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'hostname'}],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku domains:remove www.mystartup.url --app murmuring-headland-14719
+    Removing www.mystartup.url from ⬢ murmuring-headland-14719... done`
 }

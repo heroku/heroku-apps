@@ -15,5 +15,9 @@ module.exports = {
   description: 'take the app out of maintenance mode',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+  $ heroku maintenance:off --app murmuring-headland-14719
+  Disabling maintenance mode for ⬢ murmuring-headland-14719... done `
 }

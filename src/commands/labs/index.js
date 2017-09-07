@@ -52,5 +52,15 @@ module.exports = {
   ],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku labs --app murmuring-headland-14719
+    === User Features user@somedomainurl.com
+    [ ] app-overview                         An overview page for an app
+    [ ] github-enterprise                    Heroku Buttons for GitHub Enterprise
+    [ ] metrics-beta                         App Metrics Beta Features
+    [ ] metrics-chart-config                 Set order and visibility preferences for your metrics charts
+    [ ] metrics-data-lag                     Adds an indicator to your graphs when data is still processing, or not available. Prevents graphs from falling off before data
+    is available, or when a data gap occurs.                                                                   `
 }

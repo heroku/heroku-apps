@@ -35,5 +35,10 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'hostname'}],
   flags: [{name: 'wait'}],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+  $ heroku domains:add www.mystartup.url --app murmuring-headland-14719
+  Adding www.mystartup.url to ⬢ murmuring-headland-14719... done
+  ▸    Configure your app's DNS provider to point to the DNS Target www.mystartup.url.herokudns.com.`
 }
