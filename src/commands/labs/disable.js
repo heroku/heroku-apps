@@ -43,4 +43,4 @@ module.exports = {
 
     heroku labs:disable app-alerting --app murmuring-headland-14719
     Disabling app-alerting for murmuring-headland-14719... done`
-  }
+}

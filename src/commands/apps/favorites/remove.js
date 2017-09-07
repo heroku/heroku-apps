@@ -28,5 +28,5 @@ module.exports = {
   help: `Example:
 
     $ heroku apps:favorites:remove --app murmuring-headland-14719
-		Removing ⬢ murmuring-headland-14719 from favorites... done`
+    Removing ⬢ murmuring-headland-14719 from favorites... done`
 }

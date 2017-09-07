@@ -32,7 +32,6 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'permanently destroy an app',
-  help: 'This will also destroy all add-ons on the app.',
   needsAuth: true,
   wantsApp: true,
   args: [{name: 'app', hidden: true, optional: true}],
@@ -40,7 +39,8 @@ let cmd = {
     {name: 'confirm', char: 'c', hasValue: true}
   ],
   run: cli.command(co.wrap(run)),
-  help: `Example:
+  help: `This will also destroy all add-ons on the app.
+  Example:
 
     $ heroku apps:destroy --app murmuring-headland-14719
  ▸    WARNING: This will delete ⬢ murmuring-headland-14719 including all add-ons.
