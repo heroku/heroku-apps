@@ -49,7 +49,7 @@ module.exports = {
     {name: 'json', description: 'output in json format'},
     {name: 'read', description: 'show notifications already read'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
   help: `Example:
 
     $ heroku notifications
