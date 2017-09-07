@@ -32,7 +32,7 @@ module.exports = {
 
     $ heroku keys
     === somedev@somedomain.info keys
-    ssh-rsa AkzCXZBx.A..ayuA3fNuAgh root@lappy`
+    ssh-rsa AkzCXZBx.A..ayuA3fNuAgh root@lappy`,
   run: cli.command(co.wrap(run)),
   flags: [
     {name: 'long', char: 'l', description: 'display full SSH keys'},
