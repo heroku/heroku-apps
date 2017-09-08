@@ -81,12 +81,12 @@ let cmd = {
   help: `Example:
 
     $ heroku apps
-    $ === My Apps
-    $ example
-    $ example2
-    
-    $ === Collaborated Apps
-    $ theirapp   other@owner.name`,
+     === My Apps
+     example
+     example2
+
+     === Collaborated Apps
+     theirapp   other@owner.name`,
   needsAuth: true,
   wantsOrg: true,
   flags: [

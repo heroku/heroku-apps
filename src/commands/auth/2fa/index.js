@@ -10,7 +10,7 @@ export default class Index extends Command {
   static help = `Example:
 
     $ heroku 2fa
-    $ Two-factor authentication is enabled`
+     Two-factor authentication is enabled`
   static overview = `The 2fa module for Heroku. Be extra secure.`
   async run () {
     let {body: account} = await this.heroku.get('/account')

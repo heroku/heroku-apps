@@ -43,8 +43,8 @@ let cmd = {
   Example:
 
     $ heroku apps:destroy --app murmuring-headland-14719
- ▸    WARNING: This will delete ⬢ murmuring-headland-14719 including all add-ons.
- ▸    To proceed, type murmuring-headland-14719 or re-run this command with --confirm murmuring-headland-14719`
+     ▸    WARNING: This will delete ⬢ murmuring-headland-14719 including all add-ons.
+     ▸    To proceed, type murmuring-headland-14719 or re-run this command with --confirm murmuring-headland-14719`
 }
 
 module.exports = [
