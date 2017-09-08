@@ -36,5 +36,13 @@ module.exports = {
     {name: 'private', description: 'show regions for private spaces'},
     {name: 'common', description: 'show regions for common runtime'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku regions --common
+    ID  Location       Runtime
+    ──  ─────────────  ──────────────
+    eu  Europe         Common Runtime
+    us  United States  Common Runtime
+`
 }

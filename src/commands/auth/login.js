@@ -25,5 +25,8 @@ export default {
     {name: 'sso', description: 'login for enterprise users under SSO'},
     {name: 'expires-in', char: 'e', description: 'duration of token in seconds', hasValue: true}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku auth:login`
 }

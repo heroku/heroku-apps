@@ -86,6 +86,21 @@ Called with one argument sets the size.
 Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+
+Example:
+
+    $ heroku dyno:resize --app murmuring-headland-14719
+    type  size  qty  cost/mo
+    ────  ────  ───  ───────
+    web   Free  1
+
+Example:
+
+    $ heroku dyno:resize Hobby --app murmuring-headland-14719
+    Scaling dynos on ⬢ murmuring-headland-14719... done
+    type  size   qty  cost/mo
+    ────  ─────  ───  ───────
+    web   Hobby  1    7
 `,
   needsAuth: true,
   needsApp: true,

@@ -52,5 +52,17 @@ module.exports = {
     {name: 'json', description: 'output in json format'},
     {name: 'shell', char: 's', description: 'output in shell format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku releases:info --app murmuring-headland-14719
+    === Release v9
+    Add-ons: heroku-postgresql:hobby-dev
+    By:      user@example.com
+    Change:  Deploy bl6532a0
+    When:    2017-09-05T20:24:25Z
+
+    === v9 Config vars
+    DATABASE_URL: postgres://user:postgres-url
+`
 }

@@ -22,5 +22,10 @@ module.exports = {
   flags: [
     {name: 'json', description: 'output in json format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku apps:favorites
+    === Favorited Apps
+    murmuring-headland-14719`
 }

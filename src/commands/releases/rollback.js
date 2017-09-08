@@ -39,7 +39,13 @@ To undo, run: ${cli.color.cmd('heroku rollback v' + (latest.version - 1))}`)
 
 let cmd = {
   description: 'rollback to a previous release',
-  help: 'If RELEASE is not specified, it will rollback one release',
+  help: `If RELEASE is not specified, it will rollback one release
+  Example:
+
+    $ heroku releases:rollback --app murmuring-headland-14719
+    Rolling back ⬢ murmuring-headland-14719 to v8... done, v10
+     ▸    Rollback affects code and config vars; it doesn't add or remove addons.
+     ▸    To undo, run: heroku rollback v9`,
   needsApp: true,
   needsAuth: true,
   args: [{name: 'release', optional: true}],

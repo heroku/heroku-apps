@@ -49,5 +49,14 @@ module.exports = {
     {name: 'json', description: 'output in json format'},
     {name: 'read', description: 'show notifications already read'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku notifications
+    === Unread Notifications
+
+    Automated Certificate Management has failed for your app murmuring-headland-14719
+
+    2017/09/01 11:32:43 -0500 (~ 4h ago)
+    Hi,.. `
 }

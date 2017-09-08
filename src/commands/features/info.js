@@ -26,5 +26,12 @@ module.exports = {
   flags: [{name: 'json', description: 'output in json format'}],
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku features:info spaces-dns-discovery --app murmuring-headland-14719 
+    === spaces-dns-discovery
+    Description: Enable DNS service discovery [general]
+    Docs:        contact dogwood@
+    Enabled:     false `
 }

@@ -19,5 +19,9 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'url'}],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku drains:add https://my.serverlog.backup --app murmuring-headland-14719 
+    Successfully added drain https://my.serverlog.backup`
 }

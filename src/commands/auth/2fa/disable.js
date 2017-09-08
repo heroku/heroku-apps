@@ -9,7 +9,11 @@ function * run (context, heroku) {
 const cmd = {
   description: 'disable 2fa on account',
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku 2fa:disable --app foo-salty-island-123
+`
 }
 
 module.exports = [

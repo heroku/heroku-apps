@@ -33,5 +33,12 @@ module.exports = {
   flags: [
     {name: 'json', description: 'output in json format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku features --app murmuring-headland-14719
+    === App Features ⬢ murmuring-headland-14719
+    [ ] http-session-affinity  Enable session affinity for all requests [general]                                                                                           
+    [ ] preboot                Provide seamless web dyno deploys [general]
+    [ ] spaces-dns-discovery   Enable DNS service discovery [general] `
 }

@@ -25,5 +25,9 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'hostname', optional: true}],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku domains:wait www.mystartup.url --app murmuring-headland-14719
+    Waiting for www.mystartup.url...`
 }

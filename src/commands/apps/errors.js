@@ -106,5 +106,9 @@ module.exports = {
     {name: 'router', description: 'show only router errors'},
     {name: 'dyno', description: 'show only dyno errors'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku apps:errors --app murmuring-headland-14719
+    No errors on ⬢ murmuring-headland-14719 in the last 24 hours`
 }

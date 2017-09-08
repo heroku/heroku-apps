@@ -29,7 +29,13 @@ let cmd = {
   description: 'show the list of available stacks',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku apps:stacks --app murmuring-headland-14719
+    === ⬢  murmuring-headland-14719
+      heroku-16
+    * cedar-14`
 }
 
 module.exports = [

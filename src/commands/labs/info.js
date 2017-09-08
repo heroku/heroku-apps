@@ -39,5 +39,12 @@ module.exports = {
   ],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku labs:info app-alerting --app murmuring-headland-14719
+    === app-alerting
+    Description: Allows the creation of alerts for Web Dynos
+    Docs:        https://devcenter.heroku.com/articles/application-metrics-beta                                                                                             
+    Enabled:     false    `
 }

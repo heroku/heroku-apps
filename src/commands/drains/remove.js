@@ -19,5 +19,9 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'url'}],
   usage: 'drains:remove [URL|TOKEN]',
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku drains:remove https://my.serverlog.drain --app murmuring-headland-14719
+    Successfully removed drain https://my.serverlog.drain`
 }

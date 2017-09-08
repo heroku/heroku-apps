@@ -13,5 +13,9 @@ module.exports = {
   description: 'display the current maintenance status of app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku maintenance --app murmuring-headland-14719
+    off`
 }

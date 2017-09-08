@@ -78,16 +78,15 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'list your apps',
-  help: `
-Example:
+  help: `Example:
 
     $ heroku apps
-    === My Apps
-    example
-    example2
-    
-    === Collaborated Apps
-    theirapp   other@owner.name`,
+     === My Apps
+     example
+     example2
+
+     === Collaborated Apps
+     theirapp   other@owner.name`,
   needsAuth: true,
   wantsOrg: true,
   flags: [
@@ -101,8 +100,10 @@ Example:
   run: cli.command(co.wrap(run))
 }
 
+const topicOverview = `The apps plugin is a collection of tools for application level management. This includes such things as creating and destroying apps. It also allows you to manage stacks and favorites`
+
 module.exports = [
-  Object.assign({topic: 'apps'}, cmd),
+  Object.assign({topic: 'apps', overview: topicOverview}, cmd),
   Object.assign({topic: 'list', hidden: true}, cmd),
   Object.assign({topic: 'apps', command: 'list', hidden: true}, cmd)
 ]

@@ -13,8 +13,11 @@ module.exports = {
   topic: 'buildpacks',
   command: 'clear',
   description: 'clear all buildpacks set on the app',
-  help: '',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku buildpacks:clear --app murmuring-headland-14719
+    Buildpacks cleared. Next release on murmuring-headland-14719 will detect buildpack normally.`
 }

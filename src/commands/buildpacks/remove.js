@@ -49,8 +49,11 @@ module.exports = {
     {name: 'index', char: 'i', hasValue: true, description: 'the 1-based index of the URL to remove from the list of URLs'}
   ],
   description: 'remove a buildpack set on the app',
-  help: '',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku buildpacks:remove heroku/scala --app murmuring-headland-14719
+    Buildpack removed. Next release on murmuring-headland-14719 will detect buildpack normally`
 }
