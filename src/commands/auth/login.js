@@ -1,29 +1,28 @@
-// @flow
+import {Command} from 'cli-engine-heroku'
 
-const cli = require('heroku-cli-util')
-const co = require('co')
-
-function * run (context, heroku) {
-  try {
-    yield cli.login({save: true, sso: context.flags.sso, expires_in: context.flags['expires-in']})
-  } catch (err) {
-    if (err.statusCode === 401) return yield run(context, heroku)
-    throw err
-  }
-  yield cli.command(co.wrap(function * (context, heroku) {
-    let account = yield heroku.get('/account')
-    cli.log(`Logged in as ${account.email}`)
-  }))(context)
-}
-
-export default {
-  topic: 'auth',
-  command: 'login',
-  description: 'login with your Heroku credentials',
-  aliases: ['login'],
-  flags: [
+export default class Whoami extends Command {
+  static topic = 'auth'
+  static command = 'login'
+  static description = 'login with your Heroku credentials'
+  static aliases = ['login']
+  static flags = [
     {name: 'sso', description: 'login for enterprise users under SSO'},
     {name: 'expires-in', char: 'e', description: 'duration of token in seconds', hasValue: true}
-  ],
-  run: cli.command(co.wrap(run))
+  ]
+
+  async run () {
+    this.cli.log('FOOBARBAZ')
+    // await this.login()
+    let {body: account} = await this.heroku.get('/account')
+    this.cli.log(`Logged in as ${this.out.color.green(account.email)}`)
+  }
+
+  async login (retries = 10) {
+    try {
+      await this.heroku.login({save: true, sso: this.flags.sso, expires_in: this.flags['expires-in']})
+    } catch (err) {
+      if (err.statusCode === 401 && retries > 0) return this.login(retries - 1)
+      throw err
+    }
+  }
 }
