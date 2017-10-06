@@ -139,6 +139,7 @@ function * run (context, heroku) {
     })
   }
 
+  dynos = dynos.sort(d => d.name)
   if (json) cli.styledJSON(dynos)
   else if (extended) printExtended(dynos)
   else {
