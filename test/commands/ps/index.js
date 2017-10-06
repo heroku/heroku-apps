@@ -58,8 +58,8 @@ describe('ps', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
       .reply(200, [
+        {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
       ])
 
     stubAppAndAccount()
