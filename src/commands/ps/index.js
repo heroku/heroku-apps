@@ -139,7 +139,7 @@ function * run (context, heroku) {
     })
   }
 
-  var compare = function (a, b) {
+  let compare = function (a, b) {
     let comparison = 0
     if (a > b) {
       comparison = 1
