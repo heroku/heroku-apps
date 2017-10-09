@@ -54,7 +54,7 @@ describe('ps', function () {
     nock.cleanAll()
   })
 
-  it.only('shows dyno list', function () {
+  it('shows dyno list', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
       .reply(200, [
