@@ -139,7 +139,17 @@ function * run (context, heroku) {
     })
   }
 
-  dynos = dynos.sort(d => d.name)
+  var compare = function (a, b) {
+    let comparison = 0
+    if (a > b) {
+      comparison = 1
+    } else if (b > a) {
+      comparison = -1
+    }
+    return comparison
+  }
+
+  dynos = dynos.sort((a, b) => compare(a.name, b.name))
   if (json) cli.styledJSON(dynos)
   else if (extended) printExtended(dynos)
   else {
