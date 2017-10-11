@@ -122,13 +122,6 @@ function * run (context, heroku) {
   promises.account_info = heroku.request({path: '/account'})
 
   let {dynos, app_info, account_info} = yield promises
-  const shielded = app_info.space && app_info.space.shield
-
-  if (shielded) {
-    dynos.forEach(d => {
-      d.size = d.size.replace('Private-', 'Shield-')
-    })
-  }
 
   if (types.length > 0) {
     dynos = dynos.filter(dyno => types.find(t => dyno.type === t))

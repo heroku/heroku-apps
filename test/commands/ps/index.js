@@ -82,8 +82,8 @@ web.1: up ${hourAgoStr} (~ 1h ago)
       .reply(200, {space: {shield: true}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
+        {command: 'npm start', size: 'Shield-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'bash', size: 'Shield-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
       ])
 
     stubAppAndAccount()
@@ -160,8 +160,8 @@ web.1: up ${hourAgoStr} (~ 1h ago)
       .reply(200, {space: {shield: true}})
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [
-        {id: 100, command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route' }},
-        {id: 101, command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route' }}
+        {id: 100, command: 'npm start', size: 'Shield-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route' }},
+        {id: 101, command: 'bash', size: 'Shield-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route' }}
       ])
 
     return cmd.run({app: 'myapp', args: [], flags: {extended: true}})
