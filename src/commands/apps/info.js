@@ -18,7 +18,7 @@ function * run (context, heroku) {
       }),
       dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
       collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
-      pipeline: heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
+      pipeline_coupling: heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
     }
 
     if (context.flags.extended) {
@@ -56,7 +56,7 @@ function * run (context, heroku) {
     if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0})
     if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
     if (info.app.space) data['Space'] = info.app.space.name
-    if (info.pipeline) data['Pipeline'] = `${info.pipeline.pipeline.name} - ${info.pipeline.stage}`
+    if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline.stage}`
 
     data['Auto Cert Mgmt'] = info.app.acm
     data['Git URL'] = info.app.git_url
@@ -92,7 +92,7 @@ function * run (context, heroku) {
     if (info.app.cron_next_run) print('cron_next_run', cli.formatDate(new Date(info.app.cron_next_run)))
     if (info.app.database_size) print('database_size', filesize(info.app.database_size, {round: 0}))
     if (info.app.create_status !== 'complete') print('create_status', info.app.create_status)
-    if (info.pipeline) print('pipeline', `${info.pipeline.pipeline.name}:${info.pipeline.stage}`)
+    if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline.stage}`)
 
     print('git_url', info.app.git_url)
     print('web_url', info.app.web_url)
