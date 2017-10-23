@@ -10,6 +10,8 @@ function * run (context, heroku) {
   const countBy = require('lodash.countby')
 
   function * getInfo (app) {
+    const pipelineCouplings = heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
+
     let promises = {
       addons: heroku.get(`/apps/${app}/addons`),
       app: heroku.request({
@@ -18,7 +20,8 @@ function * run (context, heroku) {
       }),
       dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
       collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
-      pipeline_coupling: heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
+      pipeline_coupling: pipelineCouplings,
+      pipeline: pipelineCouplings // TODO: Remove this key once we feel comfortable with https://github.com/heroku/heroku-apps/pull/207#issuecomment-335775852.
     }
 
     if (context.flags.extended) {
@@ -108,6 +111,7 @@ function * run (context, heroku) {
     shell()
   } else if (context.flags.json) {
     cli.styledJSON(info)
+    cli.warn('DEPRECATION WARNING: `pipeline` key will be removed in favor of `pipeline_coupling`')
   } else {
     print()
   }
