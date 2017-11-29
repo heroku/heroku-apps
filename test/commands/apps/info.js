@@ -5,6 +5,7 @@ const nock = require('nock')
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 const cmd = commands.find((c) => c.topic === 'apps' && c.command === 'info')
+const unwrap = require('../../unwrap')
 
 let app = {
   name: 'myapp',
@@ -221,7 +222,7 @@ stack=cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
     return cmd.run({args: {app: 'myapp'}, flags: {json: true, extended: true}})
-      .then(() => expect(cli.stderr).to.equal(' ▸    DEPRECATION WARNING: `pipeline` key will be removed in favor of ▸    `pipeline_coupling`\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal(' ▸    DEPRECATION WARNING: `pipeline` key will be removed in favor of `pipeline_coupling`\n'))
       .then(() => {
         let json = JSON.parse(cli.stdout)
         expect(json.appExtended).to.equal(undefined)
