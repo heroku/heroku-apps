@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const _ = require('lodash')
   const git = require('../../git')(context)
 
-  let app = context.args.app || context.app
+  let app = context.args.app || context.app || context.flag.confirm
   if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')
 
   context.app = app // make sure context.app is always set for herkou-cli-util
