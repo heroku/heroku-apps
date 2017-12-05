@@ -21,6 +21,7 @@ function * run (context, heroku) {
         headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
       }),
       dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
+      buildpacks: heroku.get(`/apps/${app}/buildpack-installations`).catch(() => []),
       collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
       pipeline_coupling: pipelineCouplings,
       pipeline: pipelineCouplings // TODO: Remove this key once we feel comfortable with https://github.com/heroku/heroku-apps/pull/207#issuecomment-335775852.
@@ -50,25 +51,20 @@ function * run (context, heroku) {
   let addons = info.addons.map(a => a.plan.name).sort()
   let collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
   
-  let dynos = _.chain(info.dynos)
-  .map(function (d) {
-    return {'size':d.size, 'type':d.type}
-  })
-  .groupBy('type')
-  .map(function (d) {
-    if(_.size(d) === 1) {
-      return _.head(d).type + ': ' + _.size(d) + ' ' + _.head(d).size + ' Dyno';
-    }
-      return _.head(d).type + ': ' + _.size(d) + ' ' + _.head(d).size + ' Dynos';
-  })
-  .value()
+  let dynos = _.chain(info.dynos).map(function (d) {return {'size':d.size, 'type':d.type}}).groupBy('type').map(function (d) {
+    if(_.size(d) === 1) {return _.head(d).type + ': ' + _.size(d) + ' ' + _.head(d).size + ' Dyno';}
+    return _.head(d).type + ': ' + _.size(d) + ' ' + _.head(d).size + ' Dynos';
+  }).value()
+
+  let buildpacks = info.buildpacks.map(b => b.buildpack.name.replace(/heroku\//,'')).sort()
+  console.log('buildpacks ', buildpacks)
 
   function print () {
     let data = {}
     data.Addons = addons
     data.Collaborators = collaborators
-
-    data['Dynos'] = dynos
+    data.Buildpacks = buildpacks
+    data.Dynos = dynos
 
     if (info.app.archived_at) data['Archived At'] = cli.formatDate(new Date(info.app.archived_at))
     if (info.app.cron_finished_at) data['Cron Finished At'] = cli.formatDate(new Date(info.app.cron_finished_at))
@@ -85,7 +81,6 @@ function * run (context, heroku) {
     data['Slug Size'] = filesize(info.app.slug_size, {round: 0})
     data['Owner'] = info.app.owner.email
     data['Region'] = info.app.region.name
-    //data['Dynos'] = countBy(info.dynos, 'type')
     data['Stack'] = info.app.stack.name
 
     cli.styledHeader(info.app.name)
