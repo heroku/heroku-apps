@@ -50,14 +50,11 @@ function * run (context, heroku) {
   let info = yield getInfo(app)
   let addons = info.addons.map(a => a.plan.name).sort()
   let collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
-  
   let dynos = _.chain(info.dynos).map(function (d) {return {'size':d.size, 'type':d.type}}).groupBy('type').map(function (d) {
     if(_.size(d) === 1) {return _.head(d).type + ': ' + _.size(d) + ' ' + _.head(d).size + ' Dyno';}
     return _.head(d).type + ': ' + _.size(d) + ' ' + _.head(d).size + ' Dynos';
   }).value()
-
   let buildpacks = info.buildpacks.map(b => b.buildpack.name.replace(/heroku\//,'')).sort()
-  console.log('buildpacks ', buildpacks)
 
   function print () {
     let data = {}
