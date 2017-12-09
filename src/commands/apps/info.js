@@ -8,7 +8,6 @@ function * run (context, heroku) {
   const util = require('util')
   const S = require('string')
   const countBy = require('lodash.countby')
-  //const filter = require('lodash.filter')
   const _ = require('lodash');
 
   function * getInfo (app) {
@@ -19,6 +18,13 @@ function * run (context, heroku) {
       app: heroku.request({
         path: `/apps/${app}`,
         headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+      }),
+      releases: heroku.request({
+        path: `/apps/${context.app}/releases`,
+            partial: true,
+            headers: {
+              'Range': 'version ..; max=1, order=desc'
+            }
       }),
       dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
       buildpacks: heroku.get(`/apps/${app}/buildpack-installations`).catch(() => []),
@@ -70,13 +76,20 @@ function * run (context, heroku) {
     if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
     if (info.app.space) data['Space'] = info.app.space.name
     if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline.stage}`
+    if (info.app.team) data['Team'] = `${info.app.team.name}`
+    if(_.head(info.releases).created_at) data['Last Release Time'] = Date(_.head(info.releases).created_at);
+    
+    if(_.includes(info.app.owner.email,'@herokumanager.com')){
+      data['Owner'] = _.head(info.app.owner.email.split('@')).split().toString()
+    } else {
+      data['Owner'] = info.app.owner.email
+    }
 
     data['Auto Cert Mgmt'] = info.app.acm
     data['Git URL'] = info.app.git_url
     data['Web URL'] = info.app.web_url
     data['Repo Size'] = filesize(info.app.repo_size, {round: 0})
     data['Slug Size'] = filesize(info.app.slug_size, {round: 0})
-    data['Owner'] = info.app.owner.email
     data['Region'] = info.app.region.name
     data['Stack'] = info.app.stack.name
 
