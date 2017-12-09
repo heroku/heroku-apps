@@ -1,0 +1,1 @@
+{"id":"missing_version","error":"Please specify a version along with Heroku's API MIME type. For example, `Accept: application/vnd.heroku+json; version=3`.\n"}
