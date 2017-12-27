@@ -47,7 +47,7 @@ test('disables an app feature', async () => {
   expect(stderr).toEqual('Disabling feature-a for myapp... done\n')
 })
 
-describe('warns user on a secure feature', () => {
+describe('requires confirmation to disable a secure feature', () => {
   beforeEach(() => {
     api
       .get('/account/features/spaces-strict-tls').reply(404)
@@ -61,7 +61,7 @@ describe('warns user on a secure feature', () => {
       .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false}).reply(200)
   })
 
-  test('prompts for confirmation', async () => {
+  test('warns and prompts for confirmation', async () => {
     cli.prompt = function () { return Promise.resolve('myapp') }
     let {stdout, stderr} = await LabsDisable.mock(['spaces-strict-tls', '--app=myapp'])
     expect(stdout).toEqual('')
@@ -72,7 +72,7 @@ Disabling spaces-strict-tls for myapp... done
 `)
   })
 
-  test('uses confirm flag', async () => {
+  test('uses confirm flag and does not warn', async () => {
     let {stdout, stderr} = await LabsDisable.mock(['spaces-strict-tls', '--app=myapp', '--confirm=myapp'])
     expect(stdout).toEqual('')
     expect(stderr).toEqual('Disabling spaces-strict-tls for myapp... done\n')
