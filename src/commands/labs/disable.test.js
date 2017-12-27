@@ -4,6 +4,11 @@ import LabsDisable from './disable'
 import nock from 'nock'
 const cli = require('heroku-cli-util')
 
+// flow$ignore
+process.stdout.columns = 80 // Set screen width for consistent wrapping
+// flow$ignore
+process.stderr.columns = 80 // Set screen width for consistent wrapping
+
 let api
 beforeEach(() => {
   api = nock('https://api.heroku.com')
@@ -66,7 +71,8 @@ describe('requires confirmation to disable a secure feature', () => {
     let {stdout, stderr} = await LabsDisable.mock(['spaces-strict-tls', '--app=myapp'])
     expect(stdout).toEqual('')
     expect(stderr).toEqual(` ▸    WARNING: Insecure Action
- ▸    You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
+ ▸    You are enabling an older security protocol, TLS 1.0, which some
+ ▸    organizations may not deem secure.
  ▸    To proceed, type myapp or re-run this command with --confirm myapp
 Disabling spaces-strict-tls for myapp... done
 `)
