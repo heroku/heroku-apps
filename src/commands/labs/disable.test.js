@@ -4,11 +4,6 @@ import LabsDisable from './disable'
 import nock from 'nock'
 const cli = require('heroku-cli-util')
 
-// flow$ignore
-process.stdout.columns = 80 // Set screen width for consistent wrapping
-// flow$ignore
-process.stderr.columns = 80 // Set screen width for consistent wrapping
-
 let api
 beforeEach(() => {
   api = nock('https://api.heroku.com')
