@@ -4,7 +4,7 @@ import {Command, flags} from 'cli-engine-heroku'
 
 const SecurityExceptionFeatures = {
   'spaces-strict-tls': {
-    prompt: async function (out: any, app: string) : Promise<string> {
+    prompt: async function (out: any, app: string): Promise<string> {
       const cliUtil = require('heroku-cli-util')
       out.warn('WARNING: Insecure Action')
       out.warn('You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.')
