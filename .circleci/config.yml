@@ -1,29 +1,38 @@
 ---
 version: 2
 jobs:
-  build:
+  node-latest: &test-build
     docker:
-      - image: node:9
+      - image: node:latest
+    working_directory: /cli
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
-            - v1-yarn-{{ .Branch }}
-            - v1-yarn-master
+            - v0-yarn-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{checksum "yarn.lock"}}
+            - v0-yarn-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
+            - v0-yarn-{{ .Environment.CIRCLE_JOB }}-master
       - run: yarn
-      - run: {command: "npx jest --coverage", when: always}
-      - run: {command: "npx nyc mocha", when: always}
-      - run: {command: "npx eslint .", when: always}
-      - run: {command: "npx flow check", when: always}
-      - run: |
-          mv coverage/coverage-final.json coverage/jest-coverage.json
-          npx nyc report --reporter=json
-          mv coverage/coverage-final.json coverage/mocha-coverage.json
-          npx istanbul-combine -r json coverage/*-coverage.json
-          bash <(curl -s https://codecov.io/bash)
+      - run: yarn test --coverage
+      - run: curl -s https://codecov.io/bash | bash
       - save_cache:
-          key: v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
+          key: v0-yarn-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{checksum "yarn.lock"}}
           paths:
-            - ~/cli-engine-config/node_modules
+            - /cli/node_modules
             - /usr/local/share/.cache/yarn
+  node-8:
+    <<: *test-build
+    docker:
+      - image: node:8
+  node-6:
+    <<: *test-build
+    docker:
+      - image: node:6
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - node-latest
+      - node-8
+      - node-6

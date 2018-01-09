@@ -1,6 +1,11 @@
-const nock = require('nock')
+import cli from 'cli-ux'
+import * as nock from 'nock'
 
 nock.disableNetConnect()
+
+beforeEach(() => {
+  cli.mock = true
+})
 
 afterEach(() => {
   nock.cleanAll()
