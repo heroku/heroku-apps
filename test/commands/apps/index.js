@@ -159,7 +159,8 @@ locked-app [locked]
     })
 
     it('shows locked eu app', function () {
-      let mock = stubUserApps([example, euApp, Object.assign(lockedApp, {region: {name: 'eu'}})])
+      let euLockedApp = Object.assign(lockedApp, {region: {name: 'eu'}})
+      let mock = stubUserApps([example, euApp, euLockedApp])
       return apps.run({flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
