@@ -15,7 +15,7 @@ let example = {
 let lockedApp = {
   name: 'locked-app',
   owner: {email: 'foo@bar.com'},
-  region: {name: 'eu'},
+  region: {name: 'us'},
   locked: true
 }
 
@@ -144,8 +144,22 @@ example-eu (eu)
       })
     })
 
-    it('shows locked apps', function () {
+    it('shows locked app', function () {
       let mock = stubUserApps([example, euApp, lockedApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+locked-app [locked]
+
+`)
+      })
+    })
+
+    it('shows locked eu app', function () {
+      let mock = stubUserApps([example, euApp, Object.assign(lockedApp, {region: {name: 'eu'}})])
       return apps.run({flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
