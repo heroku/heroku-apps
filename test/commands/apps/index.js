@@ -15,7 +15,7 @@ let example = {
 let lockedApp = {
   name: 'locked-app',
   owner: {email: 'foo@bar.com'},
-  region: {name: 'us'},
+  region: {name: 'eu'},
   locked: true
 }
 
@@ -152,7 +152,7 @@ example-eu (eu)
         expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
-locked-app (locked)
+locked-app [locked] (eu)
 
 `)
       })
