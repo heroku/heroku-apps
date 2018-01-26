@@ -50,11 +50,12 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'config',
   command: 'compare-and-set',
-  description: 'reset a config value if it matches the old',
+  description: 'reset a config value if you known the old value',
   help: `Example:
 
     $ heroku heroku config:compare-and-set FOO=baz --expected bar
-    production
+    Setting FOO and restarting ⬢ myapp... done, v2
+    FOO: baz
  `,
   args: [{name: 'pair'}],
   flags: [{name: 'expected', char: 'e', description: 'key value expected', hasValue: true}],
