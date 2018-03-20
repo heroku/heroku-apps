@@ -1,7 +1,7 @@
 // @flow
 
 import {Command} from '@heroku-cli/command'
-import { cli } from 'cli-ux'
+import {cli} from 'cli-ux'
 
 export default class Whoami extends Command {
   static topic = 'auth'

@@ -1,7 +1,7 @@
 // @flow
 
 import {Command, flags} from '@heroku-cli/command'
-import { cli } from 'cli-ux'
+import {cli} from 'cli-ux'
 
 const SecurityExceptionFeatures = {
   'spaces-strict-tls': {
