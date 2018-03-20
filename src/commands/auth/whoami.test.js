@@ -5,8 +5,15 @@ import nock from 'nock'
 
 let mockMachines
 
-jest.mock('netrc-parser', () => class {
-  machines = mockMachines
+jest.mock('netrc-parser', () => {
+  return {
+    default: new class {
+      machines = {}
+      loadSync = () => {
+        this.machines = mockMachines
+      }
+    }
+  }
 })
 
 let api
@@ -31,7 +38,6 @@ describe('not logged in', () => {
     try {
       await Whoami.mock()
     } catch (err) {
-      console.log(err)
       expect(err.code).toEqual(100)
     }
   })
