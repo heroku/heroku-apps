@@ -12,7 +12,7 @@ jest.mock('netrc-parser', () => {
       loadSync = () => {
         this.machines = mockMachines
       }
-    }
+    }()
   }
 })
 
