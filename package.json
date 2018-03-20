@@ -16,10 +16,10 @@
     }
   },
   "dependencies": {
+    "@heroku-cli/command": "^7.0.16",
     "bluebird": "^3.5.1",
-    "cli-engine-command": "^9.0.7",
     "cli-engine-config": "^3.4.0",
-    "cli-engine-heroku": "^5.0.4",
+    "cli-ux": "^2.0.21",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "filesize": "^3.5.11",
@@ -50,7 +50,7 @@
     "lodash.zip": "^4.2.0",
     "mkdirp": "^0.5.1",
     "mz": "^2.7.0",
-    "netrc-parser": "^2.0.5",
+    "netrc-parser": "^3.1.1",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",

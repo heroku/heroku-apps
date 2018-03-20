@@ -31,6 +31,7 @@ describe('not logged in', () => {
     try {
       await Whoami.mock()
     } catch (err) {
+      console.log(err)
       expect(err.code).toEqual(100)
     }
   })
@@ -47,7 +48,7 @@ describe('logged in', () => {
     api.get('/account')
       .reply(200, {email: 'user@heroku.com'})
     let cmd = await Whoami.mock()
-    expect(cmd.out.stdout.output).toEqual('user@heroku.com\n')
+    expect(cmd.stdout).toEqual('user@heroku.com\n')
   })
 
   it('has expired token', async () => {
