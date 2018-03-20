@@ -36,7 +36,6 @@ export default class LabsDisable extends Command {
       if (this.flags.confirm !== this.flags.app) {
         let prompt = SecurityExceptionFeatures[feature].prompt
         let confirm = await prompt(cli, this.flags.app)
-        cli.prompt
         if (confirm !== this.flags.app) {
           throw new Error('Confirmation name did not match app name. Try again.')
         }
