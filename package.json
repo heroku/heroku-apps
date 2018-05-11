@@ -23,6 +23,7 @@
     "filesize": "^3.5.11",
     "heroku-cli-util": "^8.0.6",
     "inquirer": "^5.2.0",
+    "js-yaml": "^3.9.1",
     "lodash": "^4.17.10",
     "lodash.compact": "^3.0.1",
     "lodash.countby": "^4.6.0",
