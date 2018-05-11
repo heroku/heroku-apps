@@ -1,6 +1,5 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 const {safeLoad} = require('js-yaml')
 const {readFile} = require('fs-extra')
@@ -39,7 +38,7 @@ function createApp (context, heroku, name, stack) {
   })
 }
 
-const addAddons = co.wrap(function * addAddons (heroku, app, addons) {
+async function addAddons (heroku, app, addons) {
   for (let addon of addons) {
     let body = {
       plan: addon.plan,
@@ -51,11 +50,11 @@ const addAddons = co.wrap(function * addAddons (heroku, app, addons) {
     }
 
     let request = heroku.post(`/apps/${app.name}/addons`, {body})
-    yield cli.action(`Adding ${cli.color.green(addon.plan)}`, request)
+    await cli.action(`Adding ${cli.color.green(addon.plan)}`, request)
   }
-})
+}
 
-function * runFromFlags (context, heroku) {
+async function runFromFlags (context, heroku) {
   let git = require('../../git')(context)
   let name = context.flags.app || context.args.app || process.env.HEROKU_APP
 
@@ -68,7 +67,7 @@ function * runFromFlags (context, heroku) {
     }))
   }
 
-  let app = yield cli.action(
+  let app = await cli.action(
       createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, context.flags.stack))
 
   if (context.flags.addons) {
@@ -76,12 +75,12 @@ function * runFromFlags (context, heroku) {
     let addons = plans.map(plan => ({
       plan: plan.trim(),
     }))
-    yield addAddons(heroku, app, context.flags.addons.split(','))
+      await addAddons(heroku, app, context.flags.addons.split(','))
   }
-  if (context.flags.buildpack) yield addBuildpack(app, context.flags.buildpack)
+  if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
 
   let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name)
-  if (git.inGitRepo() && !context.flags['no-remote']) yield git.createRemote(context.flags.remote || 'heroku', remoteUrl)
+  if (git.inGitRepo() && !context.flags['no-remote']) await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
   if (context.flags.json) {
     cli.styledJSON(app)
   } else {
@@ -89,24 +88,24 @@ function * runFromFlags (context, heroku) {
   }
 }
 
-const readManifest = co.wrap(function * readManifest() {
-  let buffer = yield readFile('heroku.yml')
+async function readManifest() {
+  let buffer = await readFile('heroku.yml')
   return safeLoad(buffer, {filename: 'heroku.yml'})
-})
+}
 
-function * runFromManifest (context, heroku) {
+async function runFromManifest (context, heroku) {
   let git = require('../../git')(context)
   let name = context.flags.app || context.args.app || process.env.HEROKU_APP
 
-  let manifest = yield cli.action('Reading heroku.yml manifest', readManifest())
+  let manifest = await cli.action('Reading heroku.yml manifest', readManifest())
 
-  let app = yield cli.action(
+  let app = await cli.action(
       createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, 'container'))
 
   let setup = manifest.setup || {}
   let addons = setup.addons || []
 
-  yield addAddons(heroku, app, addons)
+  await addAddons(heroku, app, addons)
 }
 
 function run (context, heroku) {
@@ -161,7 +160,7 @@ let cmd = {
     // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [
