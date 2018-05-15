@@ -113,8 +113,9 @@ async function runFromManifest (context, heroku) {
 }
 
 function run (context, heroku) {
-  if (context.flags.manifest)
-    return runFromManifest(context, heroku)
+  if (context.config.channel === 'beta')
+    if (context.flags.manifest)
+      return runFromManifest(context, heroku)
   return runFromFlags(context, heroku)
 }
 
@@ -151,7 +152,7 @@ let cmd = {
     {name: 'app', char: 'a', hasValue: true, hidden: true},
     {name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install'},
     {name: 'buildpack', char: 'b', hasValue: true, description: 'buildpack url to use for this app', completion: BuildpackCompletion},
-    {name: 'manifest', char: 'm', hasValue: false, description: 'use heroku.yml settings for this app'},
+    {name: 'manifest', char: 'm', hasValue: false, description: 'use heroku.yml settings for this app', hidden: true},
     {name: 'no-remote', char: 'n', description: 'do not create a git remote'},
     {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"', completion: RemoteCompletion},
     {name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on', completion: StackCompletion},
