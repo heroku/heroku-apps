@@ -54,6 +54,12 @@ async function addAddons (heroku, app, addons) {
   }
 }
 
+function addonsFromPlans (plans) {
+  return plans.map(plan => ({
+    plan: plan.trim(),
+  }))
+}
+
 async function runFromFlags (context, heroku) {
   let git = require('../../git')(context)
   let name = context.flags.app || context.args.app || process.env.HEROKU_APP
@@ -68,14 +74,12 @@ async function runFromFlags (context, heroku) {
   }
 
   let app = await cli.action(
-      createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, context.flags.stack))
+    createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, context.flags.stack))
 
   if (context.flags.addons) {
     let plans = context.flags.addons.split(',')
-    let addons = plans.map(plan => ({
-      plan: plan.trim(),
-    }))
-      await addAddons(heroku, app, context.flags.addons.split(','))
+    let addons = addonsFromPlans(plans)
+    await addAddons(heroku, app, addons)
   }
   if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
 
