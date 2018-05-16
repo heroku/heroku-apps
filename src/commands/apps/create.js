@@ -41,11 +41,11 @@ async function createApp (context, heroku, name, stack) {
 async function addAddons (heroku, app, addons) {
   for (let addon of addons) {
     let body = {
-      plan: addon.plan,
+      plan: addon.plan
     }
     if (addon.as) {
       body.attachment = {
-        name: addon.as,
+        name: addon.as
       }
     }
 
@@ -56,8 +56,22 @@ async function addAddons (heroku, app, addons) {
 
 function addonsFromPlans (plans) {
   return plans.map(plan => ({
-    plan: plan.trim(),
+    plan: plan.trim()
   }))
+}
+
+async function configureGitRemote (context, app, git) {
+  let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name)
+  if (git.inGitRepo() && !context.flags['no-remote']) await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
+  return remoteUrl
+}
+
+function printAppSummary (context, app, remoteUrl) {
+  if (context.flags.json) {
+    cli.styledJSON(app)
+  } else {
+    cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(remoteUrl)}`)
+  }
 }
 
 async function runFromFlags (context, heroku) {
@@ -82,17 +96,12 @@ async function runFromFlags (context, heroku) {
     await addAddons(heroku, app, addons)
   }
   if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
+  let remoteUrl = await configureGitRemote(context, app, git)
 
-  let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name)
-  if (git.inGitRepo() && !context.flags['no-remote']) await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
-  if (context.flags.json) {
-    cli.styledJSON(app)
-  } else {
-    cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(remoteUrl)}`)
-  }
+  printAppSummary(context, app, remoteUrl)
 }
 
-async function readManifest() {
+async function readManifest () {
   let buffer = await readFile('heroku.yml')
   return safeLoad(buffer, {filename: 'heroku.yml'})
 }
@@ -104,18 +113,23 @@ async function runFromManifest (context, heroku) {
   let manifest = await cli.action('Reading heroku.yml manifest', readManifest())
 
   let app = await cli.action(
-      createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, 'container'))
+    createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, 'container'))
 
   let setup = manifest.setup || {}
   let addons = setup.addons || []
 
   await addAddons(heroku, app, addons)
+  let remoteUrl = await configureGitRemote(context, app, git)
+
+  printAppSummary(context, app, remoteUrl)
 }
 
 function run (context, heroku) {
-  if (context.config.channel === 'beta')
-    if (context.flags.manifest)
+  if (context.config.channel === 'beta') {
+    if (context.flags.manifest) {
       return runFromManifest(context, heroku)
+    }
+  }
   return runFromFlags(context, heroku)
 }
 
