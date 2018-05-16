@@ -14,7 +14,7 @@ function createText (name, space) {
   return text
 }
 
-function createApp (context, heroku, name, stack) {
+async function createApp (context, heroku, name, stack) {
   let params = {
     name,
     organization: context.org || context.team || context.flags.team,
@@ -25,17 +25,17 @@ function createApp (context, heroku, name, stack) {
     locked: context.flags.locked
   }
 
-  return heroku.request({
+  let app = await heroku.request({
     method: 'POST',
     path: (params.space || params.organization) ? '/organizations/apps' : '/apps',
     body: params
-  }).then(app => {
-    let status = name ? 'done' : `done, ${cli.color.app(app.name)}`
-    if (context.flags.region) status += `, region is ${cli.color.yellow(app.region.name)}`
-    if (stack) status += `, stack is ${cli.color.yellow(app.stack.name)}`
-    cli.action.done(status)
-    return app
   })
+
+  let status = name ? 'done' : `done, ${cli.color.app(app.name)}`
+  if (context.flags.region) status += `, region is ${cli.color.yellow(app.region.name)}`
+  if (stack) status += `, stack is ${cli.color.yellow(app.stack.name)}`
+  cli.action.done(status)
+  return app
 }
 
 async function addAddons (heroku, app, addons) {
