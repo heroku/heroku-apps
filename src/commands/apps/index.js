@@ -109,7 +109,7 @@ theirapp   other@owner.name`,
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space', completion: SpaceCompletion},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
-    {name: 'internal', char: 'i', description: 'filter to Internal Web Apps'},
+    {name: 'internal', hidden: true, char: 'i', description: 'filter to Internal Web Apps'},
     // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
