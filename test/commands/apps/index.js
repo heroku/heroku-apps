@@ -198,7 +198,7 @@ locked-app [locked] (eu)
     })
 
     it('shows internal app', function () {
-      let  mock = stubUserApps([example, euApp, internalApp])
+      let mock = stubUserApps([example, euApp, internalApp])
       return apps.run({flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')

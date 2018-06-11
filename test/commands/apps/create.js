@@ -55,7 +55,7 @@ describe('apps:create', function () {
     let mock = nock('https://api.heroku.com')
       .post('/organizations/apps', {
         space: 'my-space-name',
-        internal: true,
+        internal: true
       })
       .reply(200, {
         name: 'foobar',
