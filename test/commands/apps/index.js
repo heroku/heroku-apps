@@ -24,7 +24,7 @@ let internalApp = {
   owner: {email: 'foo@bar.com'},
   region: {name: 'us'},
   space: {id: 'test-space-id', name: 'test-space'},
-  internal: true
+  internal_routing: true
 }
 
 let internalLockedApp = {
@@ -32,7 +32,7 @@ let internalLockedApp = {
   owner: {email: 'foo@bar.com'},
   region: {name: 'us'},
   space: {id: 'test-space-id', name: 'test-space'},
-  internal: true,
+  internal_routing: true,
   locked: true
 }
 
@@ -73,7 +73,7 @@ let orgSpaceInternalApp = {
   name: 'space-internal-app',
   owner: {email: 'test-org@herokumanager.com'},
   space: {id: 'test-space-id', name: 'test-space'},
-  internal: true
+  internal_routing: true
 }
 
 function stubApps (apps) {
@@ -342,7 +342,7 @@ space-app-2
 
     it('lists only internal apps in spaces by name', function () {
       let mock = stubOrgApps('test-org', [orgSpaceApp1, orgSpaceApp2, orgApp1, orgSpaceInternalApp])
-      return apps.run({flags: {space: 'test-space', internal: true}, args: {}}).then(function () {
+      return apps.run({flags: {space: 'test-space', 'internal-routing': true}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(

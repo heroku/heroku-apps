@@ -55,16 +55,16 @@ describe('apps:create', function () {
     let mock = nock('https://api.heroku.com')
       .post('/organizations/apps', {
         space: 'my-space-name',
-        internal: true
+        internal_routing: true
       })
       .reply(200, {
         name: 'foobar',
         stack: {name: 'cedar-14'},
-        internal: true,
+        internal_routing: true,
         web_url: 'https://foobar.com'
       })
 
-    return apps.run({flags: {space: 'my-space-name', internal: true}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
+    return apps.run({flags: {space: 'my-space-name', 'internal-routing': true}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app in space my-space-name... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -73,10 +73,10 @@ describe('apps:create', function () {
 
   it('does not create an Internal Web App outside of a space', function () {
     let thrown = false
-    return apps.run({flags: {internal: true}, args: {}, httpGitHost: 'git.heroku.com', config})
+    return apps.run({flags: {'internal-routing': true}, args: {}, httpGitHost: 'git.heroku.com', config})
       .catch(function (err) {
         expect(err).to.be.an.instanceof(Error)
-        expect(err.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal')
+        expect(err.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
         thrown = true
       })
       .then(() => expect(thrown).to.equal(true))

@@ -11,16 +11,16 @@ function * run (context, heroku) {
   let team = context.org || context.team || context.flags.team
   let org = (!context.flags.personal && team) ? team : null
   let space = context.flags.space
-  let internal = context.flags.internal
+  let internalRouting = context.flags['internal-routing']
   if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name
 
   function annotateAppName (app) {
     let name = `${app.name}`
-    if (app.locked && app.internal) {
+    if (app.locked && app.internal_routing) {
       name = `${app.name} [internal/locked]`
     } else if (app.locked) {
       name = `${app.name} [locked]`
-    } else if (app.internal) {
+    } else if (app.internal_routing) {
       name = `${app.name} [internal]`
     }
     return name
@@ -82,8 +82,8 @@ function * run (context, heroku) {
   if (space) {
     apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space))
   }
-  if (internal) {
-    apps = apps.filter(a => a.internal)
+  if (internalRouting) {
+    apps = apps.filter(a => a.internal_routing)
   }
 
   if (context.flags.json) {
@@ -109,7 +109,7 @@ theirapp   other@owner.name`,
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space', completion: SpaceCompletion},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
-    {name: 'internal', hidden: true, char: 'i', description: 'filter to Internal Web Apps'},
+    {name: 'internal-routing', hidden: true, char: 'i', description: 'filter to Internal Web Apps'},
     // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
