@@ -38,7 +38,7 @@
     "mocha": "^5.2.0",
     "mockdate": "^2.0.2",
     "netrc-parser": "^3.1.5",
-    "nock": "9.3.0",
+    "nock": "9.3.3",
     "proxyquire": "^2.0.1",
     "standard": "^11.0.1",
     "std-mocks": "1.0.1",
