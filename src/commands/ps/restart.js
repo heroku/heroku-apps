@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+let waitForDynos = require('../../ps_wait')
 
 function * run (context, heroku) {
   let app = context.app
@@ -15,6 +16,10 @@ function * run (context, heroku) {
   yield cli.action(msg, co(function * () {
     yield heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
   }))
+
+  if (context.flags.wait) {
+    yield waitForDynos(context, heroku, 1000)
+  }
 }
 
 let cmd = {
@@ -31,6 +36,9 @@ Restarting dynos... done`,
   needsAuth: true,
   needsApp: true,
   args: [{name: 'dyno', optional: true}],
+  flags: [
+    { name: 'wait', char: 'w', description: 'wait until all dynos have restarted' }
+  ],
   run: cli.command(co.wrap(run))
 }
 
